@@ -1,8 +1,14 @@
-import Wrapper from "../components/wrapper/Wrapper";
+import Wrapper from "@/components/wrapper/Wrapper";
+import Search from "@/components/search/Search";
+import { SortFilter } from "./components/filter/SortFilter";
 
-export default async function Home() {
+export default async function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="max-w-[1310px] px-[15px] mx-auto">
+      <div className="my-7 interaction-group flex justify-between">
+        <Search />
+        <SortFilter />
+      </div>
       <Wrapper></Wrapper>
     </div>
   );
