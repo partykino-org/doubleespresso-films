@@ -7,15 +7,7 @@ interface FilmProps {
   film_url: string;
 }
 
-const imageLoader = ({
-  src,
-  width,
-  quality,
-}: {
-  src: string;
-  width: number;
-  quality: number;
-}) => {
+const imageLoader = ({ src, width, quality }) => {
   return `${src}?w=${width}&q=${quality || 75}`;
 };
 
