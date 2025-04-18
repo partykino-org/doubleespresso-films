@@ -6,21 +6,17 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function FilmPage() {
-  const params = useParams();
+  const params = useParams() as { film: string }; // 👈 типізація
   const [isLoading, setIsLoading] = useState(true);
-  console.log(params);
 
   useEffect(() => {
-    // Симуляція завантаження фільму (замінити на своє)
     const loadMovie = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2s затримка
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setIsLoading(false);
     };
 
     loadMovie();
   }, []);
-
-  useEffect(() => {});
 
   return (
     <>

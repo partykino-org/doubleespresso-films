@@ -9,10 +9,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CalendarDaysIcon, StarIcon } from "@heroicons/react/20/solid";
-import Image from "next/image";
+import Image, { ImageLoader } from "next/image";
 import Link from "next/link";
 
-const imageLoader = ({ src, width, quality }) => {
+type Poster = {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string;
+  caption: string;
+  url: string;
+};
+
+type Genre = {
+  id: number;
+  name: string;
+};
+
+type FilmItemProps = {
+  title: string;
+  film_url: string;
+  poster: Poster;
+  rating: string;
+  watchDate: string;
+  genres: Genre[];
+};
+
+const imageLoader: ImageLoader = ({ src, width, quality }) => {
   return `${src}?w=${width}&q=${quality || 75}`;
 };
 
@@ -23,21 +46,7 @@ export function FilmItem({
   rating,
   watchDate,
   genres,
-}: {
-  title: string;
-  film_url: string;
-  poster: {
-    id: number;
-    documentId: string;
-    name: string;
-    alternativeText: string;
-    caption: string;
-    url: string;
-  };
-  rating: string;
-  watchDate: string;
-  genres: { name: string; id: number }[];
-}) {
+}: FilmItemProps) {
   const { theme } = useTheme();
 
   return (
@@ -57,9 +66,9 @@ export function FilmItem({
           <Image
             loader={imageLoader}
             src={poster.url}
-            fill={true}
+            fill
             alt={poster.alternativeText}
-            className="w-full h-auto rounded-xl"
+            className="w-full h-auto rounded-xl object-cover"
           />
         </CardContent>
         <CardFooter
@@ -74,14 +83,12 @@ export function FilmItem({
       <div className="short-desc p-2">
         <div className="font-bold truncate">{title}</div>
         <div className="genres text-sm">
-          {genres.map(({ id, name }, index) => {
-            return (
-              <span key={id}>
-                {name}
-                {genres.length - 1 === index ? "" : ","}{" "}
-              </span>
-            );
-          })}
+          {genres.map(({ id, name }, index) => (
+            <span key={id}>
+              {name}
+              {index < genres.length - 1 ? ", " : ""}
+            </span>
+          ))}
         </div>
       </div>
     </Link>
