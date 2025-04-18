@@ -56,16 +56,15 @@ export function Film({ film_url }: FilmProps) {
       const film = data.data[0];
       if (film) {
         const attrs = film.attributes;
-        // Якщо Strapi повертає poster та genres як об'єкти з data
         const poster: Poster = attrs.poster?.data?.attributes || {
           url: "",
           alternativeText: "no alt",
         };
 
         const genres: Genre[] =
-          attrs.genres?.data?.map((genre: any) => ({
+          attrs.genres?.data?.map((genre: { name: string; id: number }) => ({
             id: genre.id,
-            name: genre.attributes.name,
+            name: genre.name,
           })) || [];
 
         setFilmData({
