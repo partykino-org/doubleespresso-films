@@ -21,9 +21,7 @@ const Header = () => {
             alt="Home Page link"
             className="rounded-3xl"
           />
-          <div className="text-xl bold">
-            Патікіно з <span>DoubleEspresso</span>
-          </div>
+          <div className="text-xl bold">Кава дивиться кіно</div>
         </Link>
         <SwitchWrapper />
       </nav>

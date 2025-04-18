@@ -25,16 +25,23 @@ const imageLoader = ({
 };
 
 export function FilmItem({
-  name,
+  title,
   film_url,
-  thumbnail_url,
+  poster,
   rating,
   watchDate,
   genres,
 }: {
-  name: string;
+  title: string;
   film_url: string;
-  thumbnail_url: string;
+  poster: {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText: string;
+    caption: string;
+    url: string;
+  };
   rating: string;
   watchDate: string;
   genres: { name: string; id: number }[];
@@ -57,9 +64,9 @@ export function FilmItem({
         <CardContent className="p-0 m-0 relative max-w-[245px] h-[350px]">
           <Image
             loader={imageLoader}
-            src={thumbnail_url}
+            src={poster.url}
             fill={true}
-            alt={name}
+            alt={poster.alternativeText}
             className="w-full h-auto rounded-xl"
           />
         </CardContent>
@@ -73,7 +80,7 @@ export function FilmItem({
         </CardFooter>
       </Card>
       <div className="short-desc p-2">
-        <div className="font-bold truncate">{name}</div>
+        <div className="font-bold truncate">{title}</div>
         <div className="genres text-sm">
           {genres.map(({ id, name }, index) => {
             return (

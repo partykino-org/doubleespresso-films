@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useEffect, useState } from "react";
 
@@ -6,35 +7,40 @@ interface FilmProps {
   film_url: string;
 }
 
+const imageLoader = ({
+  src,
+  width,
+  quality,
+}: {
+  src: string;
+  width: number;
+  quality: number;
+}) => {
+  return `${src}?w=${width}&q=${quality || 75}`;
+};
+
 export function Film({ film_url }: FilmProps) {
   const [filmData, setFilmData] = useState(null);
 
   useEffect(() => {
-    const getVod = async (film_url: string) => {
+    const getFilm = async (film_url: string) => {
       const res = await fetch(
-        `http://localhost:8080/api/vods?filters[vod_id][$eq]=${film_url}&populate=*`,
+        `https://admin.doublekava.watch/api/films?filters[film_url][$eq]=${film_url}&populate=*`,
         {
           cache: "no-store",
         }
       );
 
       if (!res.ok) {
-        const errText = await res.text();
-        console.error("Fetch failed:", res.status, errText);
-        throw new Error("Failed to fetch VOD");
+        throw new Error("Failed to fetch CARDS");
       }
 
       const data = await res.json();
-
-      if (data.data.length === 0) {
-        console.warn("VOD не знайдено для:", film_url);
-      }
-
+      console.log(data.data[0]);
       setFilmData(data.data[0]); // повертає один обʼєкт
     };
-    getVod(film_url);
+    getFilm(film_url);
   }, []);
-
   if (!filmData) {
     return <div>❌ Фільм не знайдено</div>;
   }
@@ -45,20 +51,53 @@ export function Film({ film_url }: FilmProps) {
     description,
     release_date,
     watchDate,
+    poster,
     rating,
     streamer_rating,
+    genres,
   } = filmData;
+  // console.log(filmData);
 
   return (
-    <div className="flex gap-12 justify-between py-20 max-w-[1310px] px-[15px] mx-auto">
+    <div className="flex gap-12 justify-between max-w-[1310px] px-[15px] mx-auto">
       <div className="w-full md:w-[300px] md:min-w-[300px]">
-        <h2 className="font-semibold text-lg">Опис</h2>
+        <div className="p-0 m-0 relative max-w-[300px] h-[400px]">
+          <Image
+            loader={imageLoader}
+            src={poster.url}
+            fill={true}
+            alt={poster.alternativeText}
+            className="w-full h-auto rounded-xl"
+          />
+        </div>
+        <div className="mt-4 p-3 rounded bg-white/10 flex flex-col gap-1">
+          <div>Дата перегляду: {watchDate.replaceAll("-", ".")}</div>
+          <div className="genres text-sm">
+            Жанри:&nbsp;
+            {genres.map(({ id, name }, index) => {
+              return (
+                <span key={id}>
+                  {name}
+                  {genres.length - 1 === index ? "" : ","}{" "}
+                </span>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="w-full">
         <div className="font-bold mb-2">
-          <h1 className="text-2xl">{title}</h1>
-          <div>📅 {watchDate}</div>
+          <h1 className="text-2xl mb-2">{title}</h1>
+          <div className="flex justify-between">
+            <p>Дата виходу: {release_date}</p>
+            <p className="text-sm">
+              {streamer_rating}{" "}
+              <span className="text-yellow-300">Налисничків</span> з 10 /{" "}
+              <span className="text-yellow-300">IMDB</span> Рейтинг: {rating} з
+              10
+            </p>
+          </div>
         </div>
 
         <div className="player mt-4">
@@ -67,11 +106,9 @@ export function Film({ film_url }: FilmProps) {
             Тег video не підтримується в вашому браузері.
           </video>
         </div>
-        <p className="text-sm text-gray-400">⭐ Рейтинг: {rating}</p>
         <div className="description mt-4">
-          <p className="text-gray-600">
-            {description?.[0]?.children?.[0]?.text || "Опис відсутній"}
-          </p>
+          <h2 className="mb-3 text-xl font-bold ">Опис до фільму:</h2>
+          <p className="px-4">{description || "Опис відсутній"}</p>
         </div>
       </div>
     </div>

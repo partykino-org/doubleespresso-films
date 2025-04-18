@@ -1,7 +1,9 @@
 import { FilmItem } from "./FilmItem";
 
 const getFilms = async () => {
-  const res = await fetch("http://localhost:8080/api/cards?populate=*");
+  const res = await fetch(
+    "https://admin.doublekava.watch/api/cards?populate=*"
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch CARDS");
@@ -13,33 +15,41 @@ const getFilms = async () => {
 
 export async function Films() {
   const films = await getFilms();
+  console.log(films);
 
   return (
     <div className="my-10 grid grid-cols-5 gap-4">
       {films.map(
         ({
           id,
-          name,
+          title,
           film_url,
-          thumbnail_url,
+          poster,
           rating,
           watchDate,
           genres,
         }: {
           id: number;
-          name: string;
+          title: string;
           film_url: string;
-          thumbnail_url: string;
+          poster: {
+            id: number;
+            documentId: string;
+            name: string;
+            alternativeText: string;
+            caption: string;
+            url: string;
+          };
           rating: string;
           watchDate: string;
-          genres: { name: string };
+          genres: { name: string; id: number; slug: string }[];
         }) => {
           return (
             <FilmItem
               key={id}
-              name={name}
+              title={title}
               film_url={film_url}
-              thumbnail_url={thumbnail_url}
+              poster={poster}
               rating={rating}
               watchDate={watchDate}
               genres={genres}
