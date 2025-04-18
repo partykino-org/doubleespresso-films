@@ -9,7 +9,7 @@ export function Search() {
   const [query, setQuery] = useState("");
 
   const handleSearch = () => {
-    console.log("Пошук:", query);
+    // console.log("Пошук:", query);
     // Тут можна викликати fetch або router.push(`/search?q=${query}`)
   };
 

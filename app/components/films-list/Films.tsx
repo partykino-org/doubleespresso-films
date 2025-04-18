@@ -15,7 +15,6 @@ const getFilms = async () => {
 
 export async function Films() {
   const films = await getFilms();
-  console.log(films);
 
   return (
     <div className="my-10 grid grid-cols-5 gap-4">

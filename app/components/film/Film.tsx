@@ -55,20 +55,19 @@ export function Film({ film_url }: FilmProps) {
 
       const film = data.data[0];
       if (film) {
-        const attrs = film.attributes;
-        const poster: Poster = attrs.poster?.data?.attributes || {
+        const poster: Poster = film.poster || {
           url: "",
           alternativeText: "no alt",
         };
 
         const genres: Genre[] =
-          attrs.genres?.data?.map((genre: { name: string; id: number }) => ({
+          film.genres?.data?.map((genre: { name: string; id: number }) => ({
             id: genre.id,
             name: genre.name,
           })) || [];
 
         setFilmData({
-          ...attrs,
+          ...film,
           poster,
           genres,
         });

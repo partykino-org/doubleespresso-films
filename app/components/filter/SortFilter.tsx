@@ -15,12 +15,12 @@ export function SortFilter() {
   const [sortBy, setSortBy] = useState<SortOption>("rating-desc");
 
   const handleSortChange = (value: SortOption) => {
-    console.log(value, sortBy);
+    // console.log(value, sortBy);
     if (value === sortBy) {
       return;
     }
     setSortBy(value);
-    console.log("Сортувати за:", sortBy);
+    // console.log("Сортувати за:", sortBy);
   };
 
   return (
