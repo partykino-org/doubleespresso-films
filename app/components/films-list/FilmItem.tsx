@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CalendarDaysIcon, StarIcon } from "@heroicons/react/20/solid";
+import { CalendarDaysIcon } from "@heroicons/react/20/solid";
 import Image, { ImageLoader } from "next/image";
 import Link from "next/link";
 
@@ -74,10 +74,10 @@ export function FilmItem({
         <CardFooter
           className={`${
             theme === "dark" ? "bg-black text-white" : "text-black bg-white"
-          } absolute bottom-2.5 right-2.5 z-10 text-2xl px-1 py-0 rounded flex gap-2 text-lg`}
+          } absolute bottom-2.5 right-2.5 z-10 text-2xl px-1 py-0 rounded flex gap-1 text-lg font-bold`}
         >
           {rating}
-          <StarIcon className="w-5 h-5" />
+          <span className="text-lg text-yellow-400">IMDb</span>
         </CardFooter>
       </Card>
       <div className="short-desc p-2">

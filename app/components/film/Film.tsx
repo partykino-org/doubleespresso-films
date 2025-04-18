@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "@/common/context/api-context";
 import Image, { ImageLoader } from "next/image";
 import { useEffect, useState } from "react";
 
@@ -36,6 +37,7 @@ const imageLoader: ImageLoader = ({ src, width, quality }) => {
 };
 
 export function Film({ film_url }: FilmProps) {
+  const { theme } = useTheme();
   const [filmData, setFilmData] = useState<FilmData["attributes"] | null>(null);
 
   useEffect(() => {
@@ -61,7 +63,7 @@ export function Film({ film_url }: FilmProps) {
         };
 
         const genres: Genre[] =
-          film.genres?.data?.map((genre: { name: string; id: number }) => ({
+          film.genres?.map((genre: { name: string; id: number }) => ({
             id: genre.id,
             name: genre.name,
           })) || [];
@@ -93,6 +95,8 @@ export function Film({ film_url }: FilmProps) {
     genres,
   } = filmData;
 
+  // console.log(filmData);
+
   return (
     <div className="flex gap-12 justify-between max-w-[1310px] px-[15px] mx-auto">
       <div className="w-full md:w-[300px] md:min-w-[300px]">
@@ -107,15 +111,17 @@ export function Film({ film_url }: FilmProps) {
         </div>
         <div className="mt-4 p-3 rounded bg-white/10 flex flex-col gap-1">
           <div>Дата перегляду: {watchDate.replaceAll("-", ".")}</div>
-          <div className="genres text-sm">
-            Жанри:&nbsp;
-            {genres.map(({ id, name }, index) => (
-              <span key={id}>
-                {name}
-                {index < genres.length - 1 ? ", " : ""}
-              </span>
-            ))}
-          </div>
+          {genres.length ? (
+            <div className="genres text-sm">
+              Жанри:&nbsp;
+              {genres.map(({ id, name }, index) => (
+                <span key={id}>
+                  {name}
+                  {index < genres.length - 1 ? ", " : ""}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -126,9 +132,22 @@ export function Film({ film_url }: FilmProps) {
             <p>Дата виходу: {release_date}</p>
             <p className="text-sm">
               {streamer_rating}{" "}
-              <span className="text-yellow-300">Налисничків</span> з 10 /{" "}
-              <span className="text-yellow-300">IMDB</span> Рейтинг: {rating} з
-              10
+              <span
+                className={`${
+                  theme === "dark" ? "text-yellow-300" : "text-black"
+                }`}
+              >
+                Налисничків
+              </span>{" "}
+              з 10 /{" "}
+              <span
+                className={`${
+                  theme === "dark" ? "text-yellow-300" : "text-black"
+                }`}
+              >
+                IMDb
+              </span>{" "}
+              Рейтинг: {rating} з 10
             </p>
           </div>
         </div>

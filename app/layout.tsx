@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Кава дивиться кіно",
   description: "Їмо налисники, дивимось фільми",
   icons: {
-    icon: "/images/coffee_icon.png",
+    icon: "https://doubleespresso-films.s3.eu-north-1.amazonaws.com/doubleespresso_logo.png",
   },
   openGraph: {
     title: "Кава дивиться кіно",
