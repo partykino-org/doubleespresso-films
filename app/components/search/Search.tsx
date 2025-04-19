@@ -5,12 +5,21 @@ import { Button } from "@/components/ui/button";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 
-export function Search() {
+export function Search({
+  setSearchedFilm,
+}: {
+  setSearchedFilm: (query: string) => void;
+}) {
   const [query, setQuery] = useState("");
 
-  const handleSearch = () => {
-    // console.log("Пошук:", query);
-    // Тут можна викликати fetch або router.push(`/search?q=${query}`)
+  const handleSearch = (
+    e:
+      | React.KeyboardEvent<HTMLInputElement>
+      | React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (e.key === "Enter" || !e.key) {
+      setSearchedFilm(query);
+    }
   };
 
   return (
@@ -21,6 +30,7 @@ export function Search() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="flex-grow"
+        onKeyDown={handleSearch}
       />
       <Button variant="outline" onClick={handleSearch}>
         <MagnifyingGlassIcon className="h-4 w-4" />

@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { FilmItem } from "./FilmItem";
 
-export function Films() {
+export function Films({ searchedFilm }: { searchedFilm: string }) {
   const [films, setFilms] = useState([]);
+  const [filteredFilms, setFilteredFilms] = useState(films);
 
   useEffect(() => {
     const getFilms = async () => {
@@ -22,11 +23,31 @@ export function Films() {
     getFilms();
   }, []);
 
+  useEffect(() => {
+    function findFilm(filmInput: string) {
+      const filteredFilms = films?.filter(({ title }: { title: string }) =>
+        title.toLowerCase().includes(filmInput)
+      );
+
+      if (filmInput.trim().length === 0) {
+        setFilteredFilms(films);
+      }
+
+      if (filteredFilms.length === 0) {
+        setFilteredFilms(filteredFilms);
+      }
+      if (filteredFilms.length > 0) {
+        setFilteredFilms(filteredFilms);
+      }
+    }
+    findFilm(searchedFilm);
+  }, [searchedFilm, films]);
+
   if (!films.length) return <p>Loading...</p>;
 
   return (
     <div className="my-10 grid grid-cols-5 gap-4">
-      {films.map(
+      {filteredFilms.map(
         ({
           id,
           title,
