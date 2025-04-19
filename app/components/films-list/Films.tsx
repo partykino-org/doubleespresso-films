@@ -1,20 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { FilmItem } from "./FilmItem";
 
-const getFilms = async () => {
-  const res = await fetch(
-    "https://admin.doublekava.watch/api/cards?populate=*"
-  );
+export function Films() {
+  const [films, setFilms] = useState([]);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch CARDS");
-  }
+  useEffect(() => {
+    const getFilms = async () => {
+      const res = await fetch(
+        "https://admin.doublekava.watch/api/cards?populate=*"
+      );
 
-  const data = await res.json();
-  return data.data; // бо Strapi повертає { data: [...] }
-};
+      if (!res.ok) {
+        throw new Error("Failed to fetch CARDS");
+      }
 
-export async function Films() {
-  const films = await getFilms();
+      const data = await res.json();
+      setFilms(data.data);
+    };
+    getFilms();
+  }, []);
+
+  if (!films.length) return <p>Loading...</p>;
 
   return (
     <div className="my-10 grid grid-cols-5 gap-4">

@@ -48,7 +48,6 @@ export function Film({ film_url }: FilmProps) {
           cache: "no-store",
         }
       );
-      console.log(res);
 
       if (!res.ok) {
         throw new Error("Failed to fetch film");

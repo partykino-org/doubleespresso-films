@@ -1,4 +1,4 @@
-import Wrapper from "@/components/wrapper/Wrapper";
+import { Films } from "./components/films-list/Films";
 import Search from "@/components/search/Search";
 import { SortFilter } from "./components/filter/SortFilter";
 
@@ -9,7 +9,7 @@ export default async function HomePage() {
         <Search />
         <SortFilter />
       </div>
-      <Wrapper></Wrapper>
+      <Films />
     </div>
   );
 }
