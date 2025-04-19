@@ -12,14 +12,14 @@ export function Search({
 }) {
   const [query, setQuery] = useState("");
 
-  const handleSearch = (
-    e:
-      | React.KeyboardEvent<HTMLInputElement>
-      | React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || !e.key) {
       setSearchedFilm(query);
     }
+  };
+
+  const handleButtonSearch = () => {
+    setSearchedFilm(query);
   };
 
   return (
@@ -32,7 +32,7 @@ export function Search({
         className="flex-grow"
         onKeyDown={handleSearch}
       />
-      <Button variant="outline" onClick={handleSearch}>
+      <Button variant="outline" onClick={handleButtonSearch}>
         <MagnifyingGlassIcon className="h-4 w-4" />
       </Button>
     </div>
