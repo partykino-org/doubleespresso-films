@@ -48,6 +48,7 @@ export function Film({ film_url }: FilmProps) {
           cache: "no-store",
         }
       );
+      console.log(res);
 
       if (!res.ok) {
         throw new Error("Failed to fetch film");
@@ -94,8 +95,6 @@ export function Film({ film_url }: FilmProps) {
     streamer_rating,
     genres,
   } = filmData;
-
-  // console.log(filmData);
 
   return (
     <div className="flex gap-12 justify-between max-w-[1310px] px-[15px] mx-auto">

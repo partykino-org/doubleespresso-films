@@ -10,7 +10,6 @@ const getFilms = async () => {
   }
 
   const data = await res.json();
-  console.log(data);
   return data.data; // бо Strapi повертає { data: [...] }
 };
 
