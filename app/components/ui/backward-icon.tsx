@@ -1,4 +1,8 @@
-function BackwardIcon() {
+interface BackwardIconProps {
+  className?: string;
+}
+
+function BackwardIcon({ className }: BackwardIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +10,7 @@ function BackwardIcon() {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
+      className={`size-6 ${className}`}
     >
       <path
         strokeLinecap="round"

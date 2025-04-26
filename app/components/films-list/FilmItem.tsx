@@ -50,8 +50,8 @@ export function FilmItem({
   const { theme } = useTheme();
 
   return (
-    <Link href={`/films/${film_url}`}>
-      <Card className="p-0 m-0 relative will-change-transform transition-transform hover:scale-[102%] active:scale-[97%]">
+    <Link href={`/films/${film_url}`} className="flex flex-col">
+      <Card className="p-0 m-0 max-w-[160px] md:max-w-[230px] lg:max-w-[245px] relative will-change-transform transition-transform hover:scale-[102%] active:scale-[97%] md:w-[300px]">
         <CardHeader className="absolute top-3 left-3 z-10 p-0">
           <CardTitle
             className={`${
@@ -62,7 +62,7 @@ export function FilmItem({
             {watchDate}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 m-0 relative max-w-[245px] h-[350px]">
+        <CardContent className="p-0 m-0 relative max-w-[160px] h-[240px] md:max-w-[245px] md:h-[350px]">
           <Image
             loader={imageLoader}
             src={poster.url}

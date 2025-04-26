@@ -140,7 +140,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-5xl aspect-video bg-black show-controls"
+      className="relative flex w-full max-w-5xl aspect-video bg-black show-controls"
     >
       <video
         ref={videoRef}
@@ -168,8 +168,8 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
             className="h-1 bg-blue-500 w-0 absolute top-0 left-0"
           />
         </div>
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex items-center space-x-2 w-[250px]">
+        <div className="relative flex justify-between items-center mt-2">
+          <div className="flex items-center space-x-2 md:w-[250px]">
             {isMuted ? (
               <SpeakerIconMuted
                 onClick={() => {
@@ -181,7 +181,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
                     setIsMuted(false);
                   }
                 }}
-                className="text-white cursor-pointer"
+                className="text-white cursor-pointer w-4 h-4 md:w-6 md:h-6"
               />
             ) : (
               <SpeakerIcon
@@ -195,7 +195,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
                     setIsMuted(true);
                   }
                 }}
-                className="text-white cursor-pointer"
+                className="text-white cursor-pointer w-4 h-4 md:w-6 md:h-6"
               />
             )}
             <input
@@ -206,28 +206,32 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
               step="any"
               onChange={handleVolumeChange}
               defaultValue="0.5"
-              className="accent-blue-500 w-[70px]"
+              className="accent-blue-500 w-[30px] md:w-[70px]"
             />
-            <div className="text-white text-sm">
+            <div className="text-white text-[8px] md:text-sm">
               {currentTime} / {duration}
             </div>
           </div>
           <div className="flex gap-4">
             <button onClick={() => skipTime(-10)} className="text-white">
-              <BackwardIcon />
+              <BackwardIcon className="w-4 h-4 md:w-6 md:h-6" />
             </button>
             <button onClick={togglePlayPause} className="text-white">
-              {isPlaying ? <PlayIcon /> : <PauseIcon />}
+              {isPlaying ? (
+                <PlayIcon className="w-4 h-4 md:w-6 md:h-6" />
+              ) : (
+                <PauseIcon className="w-4 h-4 md:w-6 md:h-6" />
+              )}
             </button>
             <button onClick={() => skipTime(10)} className="text-white">
-              <ForwardIcon />
+              <ForwardIcon className="w-4 h-4 md:w-6 md:h-6" />
             </button>
           </div>
-          <div className="flex items-center justify-end space-x-2 w-[250px]">
+          <div className="flex items-center justify-end space-x-2 md:w-[250px]">
             <select
               value={playbackRate}
               onChange={handlePlaybackRateChange}
-              className="text-white bg-black border border-white rounded"
+              className="text-white bg-black border border-white rounded text-[10px] md:text-lg"
             >
               <option value={0.5}>0.5x</option>
               <option value={1}>1x</option>
@@ -235,7 +239,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
               <option value={2}>2x</option>
             </select>
             <button onClick={toggleFullscreen} className="text-white">
-              <FullScreenIcon />
+              <FullScreenIcon className="w-4 h-4 md:w-6 md:h-6" />
             </button>
           </div>
         </div>

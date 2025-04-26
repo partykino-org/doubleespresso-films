@@ -11,7 +11,7 @@ const Wrapper = () => {
 
   return (
     <div className="max-w-[1310px] px-[15px] mx-auto">
-      <div className="my-7 interaction-group flex justify-between">
+      <div className="my-4 md:my-7 interaction-group flex flex-col md:flex-row gap-y-2 justify-between">
         <Search setSearchedFilm={setSearchedFilm} />
         <SortFilter setSortBy={setSortBy} sortBy={sortBy} />
       </div>

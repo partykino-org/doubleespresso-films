@@ -76,7 +76,7 @@ export function Films({
   if (!films.length) return <p>Loading...</p>;
 
   return (
-    <div className="my-10 grid grid-cols-5 gap-4">
+    <div className="my-5 md:my-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {filteredFilms.map(
         ({
           id,

@@ -97,9 +97,9 @@ export function Film({ film_url }: FilmProps) {
   } = filmData;
 
   return (
-    <div className="flex gap-12 justify-between max-w-[1310px] px-[15px] mx-auto">
-      <div className="w-full md:w-[300px] md:min-w-[300px]">
-        <div className="p-0 m-0 relative max-w-[300px] h-[400px]">
+    <div className="flex flex-col md:flex-row gap-12 justify-between max-w-[1310px] px-[15px] mx-auto">
+      <div className="flex flex-col w-full md:w-[240px] lg:w-[300px] lg:min-w-[300px]">
+        <div className="p-0 m-0 relative w-[345px] md:max-w-[240px] lg:max-w-[300px] h-[460px] md:h-[340px] lg:h-[400px]">
           <Image
             loader={imageLoader}
             src={poster.url}
@@ -108,7 +108,7 @@ export function Film({ film_url }: FilmProps) {
             className="w-full h-auto rounded-xl object-cover"
           />
         </div>
-        <div className="mt-4 p-3 rounded bg-white/10 flex flex-col gap-1">
+        <div className="mt-4 p-3 w-[345px] md:w-auto rounded bg-white/10 flex flex-col gap-1">
           <div>Дата перегляду: {watchDate.replaceAll("-", ".")}</div>
           {genres.length ? (
             <div className="genres text-sm">
@@ -125,9 +125,9 @@ export function Film({ film_url }: FilmProps) {
       </div>
 
       <div className="w-full">
-        <div className="font-bold mb-2">
+        <div className="font-bold mb-2 flex flex-col">
           <h1 className="text-2xl mb-2">{title}</h1>
-          <div className="flex justify-between">
+          <div className="flex flex-col lg:flex-row gap-y-2 justify-between">
             <p>Дата виходу: {release_date}</p>
             <p className="text-sm">
               {streamer_rating}{" "}
@@ -156,7 +156,9 @@ export function Film({ film_url }: FilmProps) {
         </div>
         <div className="description mt-4">
           <h2 className="mb-3 text-xl font-bold">Опис до фільму:</h2>
-          <p className="px-4">{description || "Опис відсутній"}</p>
+          <p className="px-4 text-sm md:text-md">
+            {description || "Опис відсутній"}
+          </p>
         </div>
       </div>
     </div>

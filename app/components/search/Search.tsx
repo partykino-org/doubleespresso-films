@@ -23,7 +23,7 @@ export function Search({
   };
 
   return (
-    <div className="flex items-center gap-2 w-full max-w-md">
+    <div className="flex items-center gap-2 w-full md:max-w-md">
       <Input
         type="text"
         placeholder="Пошук..."

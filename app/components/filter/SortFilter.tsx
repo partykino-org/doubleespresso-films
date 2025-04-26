@@ -26,7 +26,7 @@ export function SortFilter({
   };
 
   return (
-    <div className="w-[200px]">
+    <div className="w-full md:w-[200px]">
       <Select value={sortBy} onValueChange={handleSortChange}>
         <SelectTrigger className={"w-full"}>
           <SelectValue placeholder="Сортувати за" />

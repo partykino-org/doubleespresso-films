@@ -21,7 +21,7 @@ export default function FilmPage() {
   return (
     <>
       {isLoading && <FullscreenLoader />}
-      <div className="py-20 max-w-[1310px] px-[15px] mx-auto">
+      <div className="py-8 md:py-20 max-w-[1310px] md:px-[15px] mx-auto">
         {!isLoading && <Film film_url={params.film} />}
       </div>
     </>

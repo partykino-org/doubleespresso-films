@@ -14,7 +14,7 @@ const Footer = () => {
         theme === "dark" && "bg-white/10"
       } bg-[#121217]/10 backdrop-blur-md backdrop-blur-2xl`}
     >
-      <div className="py-8 max-w-[1310px] px-[15px] mx-auto flex items-center justify-between">
+      <div className="py-8 max-w-[1310px] px-[15px] mx-auto flex flex-col md:flex-row gap-y-4 items-center justify-between">
         <div className="flex gap-4">
           <Link
             href="https://t.me/doublecacao"
