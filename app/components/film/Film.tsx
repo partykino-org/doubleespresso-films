@@ -2,6 +2,7 @@
 import { useTheme } from "@/common/context/api-context";
 import Image, { ImageLoader } from "next/image";
 import { useEffect, useState } from "react";
+import VideoPlayer from "../player/VideoPlayer";
 
 interface FilmProps {
   film_url: string;
@@ -151,10 +152,7 @@ export function Film({ film_url }: FilmProps) {
         </div>
 
         <div className="player mt-4">
-          <video controls width="100%">
-            <source src={video_url} type="video/mp4" />
-            Тег video не підтримується в вашому браузері.
-          </video>
+          <VideoPlayer film_url={video_url} />
         </div>
         <div className="description mt-4">
           <h2 className="mb-3 text-xl font-bold">Опис до фільму:</h2>
