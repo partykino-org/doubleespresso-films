@@ -14,34 +14,35 @@ const Footer = () => {
         theme === "dark" && "bg-white/10"
       } bg-[#121217]/10 backdrop-blur-md backdrop-blur-2xl`}
     >
-      <div className="py-8 max-w-[1310px] px-[15px] mx-auto flex items-center justify-around gap-6">
-        <Link
-          href="https://t.me/doublecacao"
-          target="_blank"
-          className="flex items-center gap-2"
-        >
-          <TelegramIcon width={32} height={32} />
-          Telegram
-        </Link>
-        <Link
-          href="https://www.youtube.com/@doublekava"
-          target="_blank"
-          className="flex items-center gap-2"
-        >
-          <YouTubeIcon width={32} height={32} />
-          YouTube
-        </Link>
-        <Link
-          href="https://www.twitch.tv/doubleespresso"
-          target="_blank"
-          className="flex items-center gap-2"
-        >
-          <TwitchIcon width={32} height={32} />
-          Twitch
-        </Link>
+      <div className="py-8 max-w-[1310px] px-[15px] mx-auto flex items-center justify-between">
+        <div className="flex gap-4">
+          <Link
+            href="https://t.me/doublecacao"
+            target="_blank"
+            className="flex items-center gap-2"
+          >
+            <TelegramIcon width={32} height={32} />
+            Telegram
+          </Link>
+          <Link
+            href="https://www.youtube.com/@doublekava"
+            target="_blank"
+            className="flex items-center gap-2"
+          >
+            <YouTubeIcon width={32} height={32} />
+            YouTube
+          </Link>
+          <Link
+            href="https://www.twitch.tv/doubleespresso"
+            target="_blank"
+            className="flex items-center gap-2"
+          >
+            <TwitchIcon width={32} height={32} />
+            Twitch
+          </Link>
+        </div>
         <div>
-          Created by{" "}
-          <span className="font-bold">Mars with Ogre Seal Totem & Co</span>
+          Created by <span className="font-bold">-VDM</span>
         </div>
       </div>
     </footer>

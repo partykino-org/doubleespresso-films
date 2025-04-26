@@ -7,20 +7,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { SortOption } from "../wrapper/Wrapper";
+import { Dispatch, SetStateAction } from "react";
 
-type SortOption = "rating-desc" | "rating-asc" | "date-desc" | "date-asc";
-
-export function SortFilter() {
-  const [sortBy, setSortBy] = useState<SortOption>("rating-desc");
-
+export function SortFilter({
+  sortBy,
+  setSortBy,
+}: {
+  sortBy: string;
+  setSortBy: Dispatch<SetStateAction<SortOption>>;
+}) {
   const handleSortChange = (value: SortOption) => {
     // console.log(value, sortBy);
     if (value === sortBy) {
       return;
     }
     setSortBy(value);
-    // console.log("Сортувати за:", sortBy);
   };
 
   return (
@@ -30,10 +32,10 @@ export function SortFilter() {
           <SelectValue placeholder="Сортувати за" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="rating-desc">Рейтинг ↓</SelectItem>
           <SelectItem value="rating-asc">Рейтинг ↑</SelectItem>
-          <SelectItem value="date-desc">Дата ↓</SelectItem>
-          <SelectItem value="date-asc">Дата ↑</SelectItem>
+          <SelectItem value="rating-desc">Рейтинг ↓</SelectItem>
+          <SelectItem value="date-desc">Дата перегляду ↓</SelectItem>
+          <SelectItem value="date-asc">Дата перегляду ↑</SelectItem>
         </SelectContent>
       </Select>
     </div>

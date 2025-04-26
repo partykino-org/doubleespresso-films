@@ -30,7 +30,7 @@ type FilmItemProps = {
   title: string;
   film_url: string;
   poster: Poster;
-  rating: string;
+  rating: number;
   watchDate: string;
   genres: Genre[];
 };

@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FilmItem } from "./FilmItem";
+import { SortOption } from "../wrapper/Wrapper";
 
-export function Films({ searchedFilm }: { searchedFilm: string }) {
+export function Films({
+  searchedFilm,
+  sortBy,
+}: {
+  searchedFilm: string;
+  sortBy: SortOption;
+}) {
   const [films, setFilms] = useState([]);
   const [filteredFilms, setFilteredFilms] = useState(films);
 
@@ -18,10 +25,33 @@ export function Films({ searchedFilm }: { searchedFilm: string }) {
       }
 
       const data = await res.json();
+      data.data?.sort((a: FilmProps, b: FilmProps) => b.rating - a.rating);
       setFilms(data.data);
     };
     getFilms();
   }, []);
+
+  useEffect(() => {
+    function sortFilms() {
+      filteredFilms?.sort((a: FilmProps, b: FilmProps): number => {
+        switch (sortBy) {
+          case "date-asc":
+            return (
+              new Date(a.watchDate).getTime() - new Date(b.watchDate).getTime()
+            );
+          case "date-desc":
+            return (
+              new Date(b.watchDate).getTime() - new Date(a.watchDate).getTime()
+            );
+          case "rating-asc":
+            return a.rating - b.rating;
+          case "rating-desc":
+            return b.rating - a.rating;
+        }
+      });
+    }
+    sortFilms();
+  }, [sortBy, filteredFilms, films]);
 
   useEffect(() => {
     function findFilm(filmInput: string) {
@@ -56,22 +86,7 @@ export function Films({ searchedFilm }: { searchedFilm: string }) {
           rating,
           watchDate,
           genres,
-        }: {
-          id: number;
-          title: string;
-          film_url: string;
-          poster: {
-            id: number;
-            documentId: string;
-            name: string;
-            alternativeText: string;
-            caption: string;
-            url: string;
-          };
-          rating: string;
-          watchDate: string;
-          genres: { name: string; id: number; slug: string }[];
-        }) => {
+        }: FilmProps) => {
           return (
             <FilmItem
               key={id}
@@ -87,4 +102,21 @@ export function Films({ searchedFilm }: { searchedFilm: string }) {
       )}
     </div>
   );
+}
+
+interface FilmProps {
+  id: number;
+  title: string;
+  film_url: string;
+  poster: {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText: string;
+    caption: string;
+    url: string;
+  };
+  rating: number;
+  watchDate: string;
+  genres: { name: string; id: number; slug: string }[];
 }
