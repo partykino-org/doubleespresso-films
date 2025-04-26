@@ -1,4 +1,14 @@
-function SpeakerIconMuted({ onClick, className }) {
+import React from "react";
+
+interface SpeakerIconMutedProps {
+  onClick?: React.MouseEventHandler<SVGSVGElement>;
+  className?: string;
+}
+
+const SpeakerIconMuted: React.FC<SpeakerIconMutedProps> = ({
+  onClick,
+  className,
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +26,6 @@ function SpeakerIconMuted({ onClick, className }) {
       />
     </svg>
   );
-}
+};
 
 export default SpeakerIconMuted;

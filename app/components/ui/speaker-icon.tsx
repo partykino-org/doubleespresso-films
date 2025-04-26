@@ -1,4 +1,11 @@
-function SpeakerIcon({ onClick, className }) {
+import React from "react";
+
+interface SpeakerIconProps {
+  onClick?: React.MouseEventHandler<SVGSVGElement>;
+  className?: string;
+}
+
+const SpeakerIcon: React.FC<SpeakerIconProps> = ({ onClick, className }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +23,6 @@ function SpeakerIcon({ onClick, className }) {
       />
     </svg>
   );
-}
+};
 
 export default SpeakerIcon;
