@@ -158,6 +158,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
         onLoadedData={handleLoadedData}
         className="w-full cursor-pointer"
         src={film_url}
+        controls={isMobile}
       />
       {!isMobile ? (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
