@@ -26,7 +26,6 @@ export function Films({
 
       const data = await res.json();
       data.data?.sort((a: FilmProps, b: FilmProps) => b.rating - a.rating);
-      console.log(data.data);
       setFilms(data.data);
     };
     getFilms();
