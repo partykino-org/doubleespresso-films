@@ -7,7 +7,7 @@ import { SortFilter } from "@/components/filter/SortFilter";
 
 const Wrapper = () => {
   const [searchedFilm, setSearchedFilm] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("rating-asc");
+  const [sortBy, setSortBy] = useState<SortOption>("streamer-rating-asc");
 
   return (
     <div className="max-w-[1310px] px-[15px] mx-auto">
@@ -23,6 +23,8 @@ const Wrapper = () => {
 export default Wrapper;
 
 export type SortOption =
+  | "streamer-rating-asc"
+  | "streamer-rating-desc"
   | "rating-desc"
   | "rating-asc"
   | "date-desc"

@@ -32,8 +32,14 @@ export function SortFilter({
           <SelectValue placeholder="Сортувати за" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="rating-asc">Рейтинг ↑</SelectItem>
-          <SelectItem value="rating-desc">Рейтинг ↓</SelectItem>
+          <SelectItem value="streamer-rating-asc">
+            Рейтинг Стрімера ↑
+          </SelectItem>
+          <SelectItem value="streamer-rating-desc">
+            Рейтинг Стрімера ↓
+          </SelectItem>
+          <SelectItem value="rating-asc">Рейтинг IMDb ↑</SelectItem>
+          <SelectItem value="rating-desc">Рейтинг IMDb ↓</SelectItem>
           <SelectItem value="date-desc">Дата перегляду ↓</SelectItem>
           <SelectItem value="date-asc">Дата перегляду ↑</SelectItem>
         </SelectContent>

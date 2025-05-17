@@ -11,6 +11,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const progressWrapperRef = useRef<HTMLDivElement>(null);
   const volumeSliderRef = useRef<HTMLInputElement>(null);
   const [currentTime, setCurrentTime] = useState<string>("00:00");
   const [duration, setDuration] = useState<string>("00:00");
@@ -21,11 +22,14 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const formatTime = (time: number): string => {
-    let seconds = Math.floor(time % 60);
-    let minutes = Math.floor(time / 60) % 60;
+    const seconds = Math.floor(time % 60)
+      .toString()
+      .padStart(2, "0");
+    const minutes = Math.floor((time / 60) % 60)
+      .toString()
+      .padStart(2, "0");
     const hours = Math.floor(time / 3600);
-    if (seconds < 10) seconds = Number(`0${seconds}`);
-    if (minutes < 10) minutes = Number(`0${minutes}`);
+
     return hours ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
   };
 
@@ -163,15 +167,16 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
       {!isMobile ? (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
           <div
+            ref={progressWrapperRef}
             className="h-1 bg-white/50 cursor-pointer relative"
             onClick={(e) => {
-              const rect = (e.target as HTMLElement).getBoundingClientRect();
+              const progressWrapper = progressWrapperRef.current;
+              const video = videoRef.current;
+              if (!progressWrapper || !video) return;
+              const rect = progressWrapper.getBoundingClientRect();
               const clickX = e.clientX - rect.left;
-              if (videoRef.current) {
-                const newTime =
-                  (clickX / rect.width) * videoRef.current.duration;
-                videoRef.current.currentTime = newTime;
-              }
+              const newTime = (clickX / rect.width) * video.duration;
+              video.currentTime = newTime;
             }}
           >
             <div
@@ -229,7 +234,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
                 <BackwardIcon className="w-4 h-4 md:w-6 md:h-6" />
               </button>
               <button onClick={togglePlayPause} className="text-white">
-                {isPlaying ? (
+                {!isPlaying ? (
                   <PlayIcon className="w-4 h-4 md:w-6 md:h-6" />
                 ) : (
                   <PauseIcon className="w-4 h-4 md:w-6 md:h-6" />

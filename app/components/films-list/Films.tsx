@@ -26,6 +26,7 @@ export function Films({
 
       const data = await res.json();
       data.data?.sort((a: FilmProps, b: FilmProps) => b.rating - a.rating);
+      console.log(data.data);
       setFilms(data.data);
     };
     getFilms();
@@ -47,6 +48,10 @@ export function Films({
             return a.rating - b.rating;
           case "rating-desc":
             return b.rating - a.rating;
+          case "streamer-rating-asc":
+            return a.streamerRating - b.streamerRating;
+          case "streamer-rating-desc":
+            return b.streamerRating - a.streamerRating;
         }
       });
     }
@@ -119,4 +124,5 @@ interface FilmProps {
   rating: number;
   watchDate: string;
   genres: { name: string; id: number; slug: string }[];
+  streamerRating: number;
 }

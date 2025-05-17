@@ -12,29 +12,6 @@ import { CalendarDaysIcon } from "@heroicons/react/20/solid";
 import Image, { ImageLoader } from "next/image";
 import Link from "next/link";
 
-type Poster = {
-  id: number;
-  documentId: string;
-  name: string;
-  alternativeText: string;
-  caption: string;
-  url: string;
-};
-
-type Genre = {
-  id: number;
-  name: string;
-};
-
-type FilmItemProps = {
-  title: string;
-  film_url: string;
-  poster: Poster;
-  rating: number;
-  watchDate: string;
-  genres: Genre[];
-};
-
 const imageLoader: ImageLoader = ({ src, width, quality }) => {
   return `${src}?w=${width}&q=${quality || 75}`;
 };
@@ -46,6 +23,7 @@ export function FilmItem({
   rating,
   watchDate,
   genres,
+  streamerRating,
 }: FilmItemProps) {
   const { theme } = useTheme();
 
@@ -71,6 +49,16 @@ export function FilmItem({
             className="w-full h-auto rounded-xl object-cover"
           />
         </CardContent>
+        {streamerRating ? (
+          <CardFooter
+            className={`${
+              theme === "dark" ? "bg-black text-white" : "text-black bg-white"
+            } absolute bottom-2.5 left-2.5 z-10 text-2xl px-1 py-0 rounded flex gap-1 text-lg font-bold`}
+          >
+            {streamerRating}
+            <span className="text-lg text-yellow-400">Streamer</span>
+          </CardFooter>
+        ) : null}
         <CardFooter
           className={`${
             theme === "dark" ? "bg-black text-white" : "text-black bg-white"
@@ -94,3 +82,27 @@ export function FilmItem({
     </Link>
   );
 }
+
+type Poster = {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string;
+  caption: string;
+  url: string;
+};
+
+type Genre = {
+  id: number;
+  name: string;
+};
+
+type FilmItemProps = {
+  title: string;
+  film_url: string;
+  poster: Poster;
+  rating: number;
+  watchDate: string;
+  genres: Genre[];
+  streamerRating: number;
+};
