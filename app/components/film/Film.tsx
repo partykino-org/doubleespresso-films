@@ -130,7 +130,6 @@ export function Film({ film_url }: FilmProps) {
         <div className="font-bold mb-2 flex flex-col">
           <h1 className="text-2xl mb-2">{title}</h1>
           {who_ordered ? <div>Замовив: {who_ordered}</div> : null}
-          <div>Замовив: {who_ordered}</div>
           <div className="flex flex-col lg:flex-row gap-y-2 justify-between">
             <p>Дата виходу: {release_date}</p>
 
