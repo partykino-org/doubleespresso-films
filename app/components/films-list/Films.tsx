@@ -91,6 +91,7 @@ export function Films({
           rating,
           watchDate,
           genres,
+          streamerRating,
         }: FilmProps) => {
           return (
             <FilmItem
@@ -101,6 +102,7 @@ export function Films({
               rating={rating}
               watchDate={watchDate}
               genres={genres}
+              streamerRating={streamerRating}
             />
           );
         }
