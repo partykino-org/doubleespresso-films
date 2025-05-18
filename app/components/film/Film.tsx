@@ -31,6 +31,7 @@ interface FilmData {
     poster: Poster;
     genres: Genre[];
     who_ordered: string;
+    char_url: string | null;
   };
 }
 
@@ -96,6 +97,7 @@ export function Film({ film_url }: FilmProps) {
     streamer_rating,
     genres,
     who_ordered,
+    char_url,
   } = filmData;
 
   return (
@@ -156,7 +158,7 @@ export function Film({ film_url }: FilmProps) {
         </div>
 
         <div className="player mt-4">
-          <VideoPlayer film_url={video_url} />
+          <VideoPlayer film_url={video_url} char_url={char_url} />
         </div>
         <div className="description mt-4">
           <h2 className="mb-3 text-xl font-bold">Опис до фільму:</h2>

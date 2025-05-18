@@ -6,10 +6,18 @@ import PauseIcon from "../ui/pause-icon";
 import BackwardIcon from "../ui/backward-icon";
 import ForwardIcon from "../ui/forward-icon";
 import FullScreenIcon from "../ui/fullscreen-icon";
+import ChatIcon from "../ui/chat-icon";
 
-export default function VideoPlayer({ film_url }: { film_url: string }) {
+export default function VideoPlayer({
+  film_url,
+  char_url,
+}: {
+  film_url: string;
+  char_url: string | null;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const chatRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressWrapperRef = useRef<HTMLDivElement>(null);
   const volumeSliderRef = useRef<HTMLInputElement>(null);
@@ -20,6 +28,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
   const [previousVolume, setPreviousVolume] = useState<number>(0.5);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isChat, setIsChat] = useState<boolean>(false);
 
   const formatTime = (time: number): string => {
     const seconds = Math.floor(time % 60)
@@ -29,7 +38,6 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
       .toString()
       .padStart(2, "0");
     const hours = Math.floor(time / 3600);
-
     return hours ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
   };
 
@@ -40,23 +48,28 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
       progressBarRef.current.style.width = `${percent}%`;
       setCurrentTime(formatTime(video.currentTime));
     }
+    if (video && chatRef.current) {
+      const diff = Math.abs(video.currentTime - chatRef.current.currentTime);
+      if (diff > 0.3) chatRef.current.currentTime = video.currentTime;
+    }
   };
 
   const handleLoadedData = () => {
     const video = videoRef.current;
-    if (video) {
-      setDuration(formatTime(video.duration));
-    }
+    if (video) setDuration(formatTime(video.duration));
   };
 
   const togglePlayPause = () => {
     const video = videoRef.current;
+    const chat = chatRef.current;
     if (video) {
       if (video.paused) {
         video.play();
+        chat?.play();
         setIsPlaying(true);
       } else {
         video.pause();
+        chat?.pause();
         setIsPlaying(false);
       }
     }
@@ -83,18 +96,28 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const video = videoRef.current;
+    const chat = chatRef.current;
     const newRate = parseFloat(e.target.value);
     if (video) {
       video.playbackRate = newRate;
+      if (chat) {
+        chat.playbackRate = newRate;
+      }
       setPlaybackRate(newRate);
     }
   };
 
   const skipTime = (seconds: number) => {
     const video = videoRef.current;
+    const chat = chatRef.current;
     if (video) {
       video.currentTime += seconds;
+      if (chat) chat.currentTime = video.currentTime;
     }
+  };
+
+  const chatHandler = () => {
+    setIsChat(!isChat);
   };
 
   useEffect(() => {
@@ -152,7 +175,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
   return (
     <div
       ref={containerRef}
-      className="relative flex w-full max-w-5xl aspect-video bg-black show-controls"
+      className={`relative flex  max-w-5xl aspect-video bg-black show-controls`}
     >
       <video
         ref={videoRef}
@@ -160,11 +183,23 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
         onDoubleClick={toggleFullscreen}
         onTimeUpdate={handleTimeUpdate}
         onLoadedData={handleLoadedData}
-        className="w-full cursor-pointer"
+        className={`cursor-pointer ${isChat ? "w-[75%]" : "w-full"}`}
         src={film_url}
         controls={isMobile}
       />
-      {!isMobile ? (
+
+      {char_url && isChat && (
+        <video
+          ref={chatRef}
+          src={char_url}
+          muted
+          playsInline
+          className="absolute top-0 right-0 w-[25%] h-full pointer-events-none"
+          style={{ mixBlendMode: "screen" }}
+        />
+      )}
+
+      {!isMobile && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
           <div
             ref={progressWrapperRef}
@@ -177,6 +212,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
               const clickX = e.clientX - rect.left;
               const newTime = (clickX / rect.width) * video.duration;
               video.currentTime = newTime;
+              if (chatRef.current) chatRef.current.currentTime = newTime;
             }}
           >
             <div
@@ -245,6 +281,11 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
               </button>
             </div>
             <div className="flex items-center justify-end space-x-2 md:w-[250px]">
+              {char_url && (
+                <button onClick={chatHandler}>
+                  <ChatIcon />
+                </button>
+              )}
               <select
                 value={playbackRate}
                 onChange={handlePlaybackRateChange}
@@ -261,7 +302,7 @@ export default function VideoPlayer({ film_url }: { film_url: string }) {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

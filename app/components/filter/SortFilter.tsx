@@ -18,7 +18,6 @@ export function SortFilter({
   setSortBy: Dispatch<SetStateAction<SortOption>>;
 }) {
   const handleSortChange = (value: SortOption) => {
-    // console.log(value, sortBy);
     if (value === sortBy) {
       return;
     }
