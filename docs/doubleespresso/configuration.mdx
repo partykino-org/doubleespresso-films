@@ -1,0 +1,521 @@
+---
+title: Configuration
+description: Configure and customize DoubleEspresso for your needs
+---
+
+This guide covers configuration options for DoubleEspresso Strapi Admin.
+
+## Server configuration
+
+Server settings are configured in `config/server.js`:
+
+```javascript config/server.js
+module.exports = ({ env }) => ({
+  host: env('HOST', '0.0.0.0'),
+  port: env.int('PORT', 1337),
+  app: {
+    keys: env.array('APP_KEYS'),
+  },
+  webhooks: {
+    populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),
+  },
+});
+```
+
+### Configuration options
+
+<ParamField path="host" type="string" default="0.0.0.0">
+  Host to bind the server to. Use `0.0.0.0` to accept connections from any IP.
+</ParamField>
+
+<ParamField path="port" type="integer" default="1337">
+  Port number for the server.
+</ParamField>
+
+<ParamField path="app.keys" type="array" required>
+  Array of keys for session encryption. Must be set in production.
+</ParamField>
+
+<ParamField path="url" type="string">
+  Public URL of your application. Required for generating correct URLs in emails and webhooks.
+</ParamField>
+
+<ParamField path="proxy" type="boolean" default="false">
+  Enable if running behind a proxy (nginx, Apache, etc.).
+</ParamField>
+
+## Database configuration
+
+Database settings are in `config/database.js`:
+
+<Tabs>
+<Tab title="PostgreSQL">
+```javascript config/database.js
+module.exports = ({ env }) => ({
+  connection: {
+    client: 'postgres',
+    connection: {
+      host: env('DATABASE_HOST', '127.0.0.1'),
+      port: env.int('DATABASE_PORT', 5432),
+      database: env('DATABASE_NAME', 'strapi'),
+      user: env('DATABASE_USERNAME', 'strapi'),
+      password: env('DATABASE_PASSWORD', 'strapi'),
+      ssl: env.bool('DATABASE_SSL', false) && {
+        rejectUnauthorized: env.bool('DATABASE_SSL_SELF', false),
+      },
+    },
+    debug: false,
+  },
+});
+```
+</Tab>
+
+<Tab title="MySQL">
+```javascript config/database.js
+module.exports = ({ env }) => ({
+  connection: {
+    client: 'mysql',
+    connection: {
+      host: env('DATABASE_HOST', '127.0.0.1'),
+      port: env.int('DATABASE_PORT', 3306),
+      database: env('DATABASE_NAME', 'strapi'),
+      user: env('DATABASE_USERNAME', 'strapi'),
+      password: env('DATABASE_PASSWORD', 'strapi'),
+      ssl: env.bool('DATABASE_SSL', false) && {
+        rejectUnauthorized: env.bool('DATABASE_SSL_SELF', false),
+      },
+    },
+    debug: false,
+  },
+});
+```
+</Tab>
+
+<Tab title="SQLite">
+```javascript config/database.js
+module.exports = ({ env }) => ({
+  connection: {
+    client: 'sqlite',
+    connection: {
+      filename: env('DATABASE_FILENAME', '.tmp/data.db'),
+    },
+    useNullAsDefault: true,
+  },
+});
+```
+</Tab>
+</Tabs>
+
+<Warning>
+SQLite is suitable for development only. Use PostgreSQL or MySQL in production.
+</Warning>
+
+## Admin panel configuration
+
+Customize the admin panel in `config/admin.js`:
+
+```javascript config/admin.js
+module.exports = ({ env }) => ({
+  auth: {
+    secret: env('ADMIN_JWT_SECRET'),
+  },
+  apiToken: {
+    salt: env('API_TOKEN_SALT'),
+  },
+  transfer: {
+    token: {
+      salt: env('TRANSFER_TOKEN_SALT'),
+    },
+  },
+  url: '/admin',
+  autoOpen: false,
+  watchIgnoreFiles: [
+    './src/**/*.test.js',
+  ],
+  host: 'localhost',
+  port: 1337,
+  serveAdminPanel: true,
+  forgotPassword: {
+    from: 'no-reply@example.com',
+    replyTo: 'support@example.com',
+  },
+  rateLimit: {
+    enabled: true,
+    interval: 60000,
+    max: 5,
+  },
+});
+```
+
+### Admin options
+
+<ParamField path="url" type="string" default="/admin">
+  Path to access the admin panel.
+</ParamField>
+
+<ParamField path="autoOpen" type="boolean" default="true">
+  Automatically open admin panel in browser on startup.
+</ParamField>
+
+<ParamField path="serveAdminPanel" type="boolean" default="true">
+  Serve the admin panel. Set to `false` if hosting separately.
+</ParamField>
+
+<ParamField path="rateLimit.enabled" type="boolean" default="true">
+  Enable rate limiting for admin login attempts.
+</ParamField>
+
+<ParamField path="rateLimit.max" type="integer" default="5">
+  Maximum login attempts within the interval.
+</ParamField>
+
+## API configuration
+
+Configure API settings in `config/api.js`:
+
+```javascript config/api.js
+module.exports = ({ env }) => ({
+  rest: {
+    defaultLimit: 25,
+    maxLimit: 100,
+    withCount: true,
+  },
+  responses: {
+    privateAttributes: ['createdBy', 'updatedBy'],
+  },
+});
+```
+
+### API options
+
+<ParamField path="rest.defaultLimit" type="integer" default="25">
+  Default number of results per page.
+</ParamField>
+
+<ParamField path="rest.maxLimit" type="integer" default="100">
+  Maximum allowed page size.
+</ParamField>
+
+<ParamField path="rest.withCount" type="boolean" default="true">
+  Include total count in pagination metadata.
+</ParamField>
+
+## Middleware configuration
+
+Configure middleware in `config/middlewares.js`:
+
+```javascript config/middlewares.js
+module.exports = [
+  'strapi::logger',
+  'strapi::errors',
+  'strapi::security',
+  'strapi::cors',
+  'strapi::poweredBy',
+  'strapi::query',
+  'strapi::body',
+  'strapi::session',
+  'strapi::favicon',
+  'strapi::public',
+  {
+    name: 'strapi::cors',
+    config: {
+      enabled: true,
+      origin: ['http://localhost:3000', 'https://yourdomain.com'],
+      headers: ['Content-Type', 'Authorization'],
+    },
+  },
+];
+```
+
+### CORS configuration
+
+<ParamField path="origin" type="array">
+  Allowed origins for CORS. Use `['*']` to allow all (not recommended in production).
+</ParamField>
+
+<ParamField path="headers" type="array">
+  Allowed HTTP headers.
+</ParamField>
+
+<ParamField path="methods" type="array" default="['GET', 'POST', 'PUT', 'DELETE']">
+  Allowed HTTP methods.
+</ParamField>
+
+## Content types
+
+Define custom content types in `src/api/[content-type]/content-types/[content-type]/schema.json`:
+
+```json src/api/movie/content-types/movie/schema.json
+{
+  "kind": "collectionType",
+  "collectionName": "movies",
+  "info": {
+    "singularName": "movie",
+    "pluralName": "movies",
+    "displayName": "Movie",
+    "description": "Movie content type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "releaseYear": {
+      "type": "integer",
+      "min": 1888,
+      "max": 2100
+    },
+    "runtime": {
+      "type": "integer",
+      "min": 1
+    },
+    "synopsis": {
+      "type": "text"
+    },
+    "rating": {
+      "type": "enumeration",
+      "enum": ["G", "PG", "PG-13", "R", "NC-17"]
+    },
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "genres": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::genre.genre",
+      "inversedBy": "movies"
+    }
+  }
+}
+```
+
+### Field types
+
+<AccordionGroup>
+<Accordion title="Text fields">
+  - `string` - Short text (max 255 characters)
+  - `text` - Long text
+  - `richtext` - Rich text with formatting
+  - `email` - Email address
+  - `password` - Encrypted password
+</Accordion>
+
+<Accordion title="Number fields">
+  - `integer` - Whole numbers
+  - `biginteger` - Large integers
+  - `float` - Decimal numbers
+  - `decimal` - Precise decimal numbers
+</Accordion>
+
+<Accordion title="Date fields">
+  - `date` - Date only
+  - `time` - Time only
+  - `datetime` - Date and time
+  - `timestamp` - Unix timestamp
+</Accordion>
+
+<Accordion title="Other fields">
+  - `boolean` - True/false
+  - `enumeration` - Predefined list of values
+  - `json` - JSON data
+  - `media` - File uploads
+  - `relation` - Relations to other content types
+</Accordion>
+</AccordionGroup>
+
+## Plugins
+
+Enable and configure plugins in `config/plugins.js`:
+
+```javascript config/plugins.js
+module.exports = ({ env }) => ({
+  upload: {
+    config: {
+      provider: 'aws-s3',
+      providerOptions: {
+        accessKeyId: env('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: env('AWS_ACCESS_SECRET'),
+        region: env('AWS_REGION'),
+        params: {
+          Bucket: env('AWS_BUCKET'),
+        },
+      },
+    },
+  },
+  email: {
+    config: {
+      provider: 'sendgrid',
+      providerOptions: {
+        apiKey: env('SENDGRID_API_KEY'),
+      },
+      settings: {
+        defaultFrom: 'no-reply@example.com',
+        defaultReplyTo: 'support@example.com',
+      },
+    },
+  },
+  graphql: {
+    enabled: true,
+    config: {
+      endpoint: '/graphql',
+      shadowCRUD: true,
+      playgroundAlways: false,
+      depthLimit: 7,
+      amountLimit: 100,
+    },
+  },
+});
+```
+
+### Upload providers
+
+<Tabs>
+<Tab title="AWS S3">
+```javascript
+upload: {
+  config: {
+    provider: 'aws-s3',
+    providerOptions: {
+      accessKeyId: env('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: env('AWS_ACCESS_SECRET'),
+      region: env('AWS_REGION'),
+      params: {
+        Bucket: env('AWS_BUCKET'),
+      },
+    },
+  },
+}
+```
+</Tab>
+
+<Tab title="Cloudinary">
+```javascript
+upload: {
+  config: {
+    provider: 'cloudinary',
+    providerOptions: {
+      cloud_name: env('CLOUDINARY_NAME'),
+      api_key: env('CLOUDINARY_KEY'),
+      api_secret: env('CLOUDINARY_SECRET'),
+    },
+  },
+}
+```
+</Tab>
+
+<Tab title="Local">
+```javascript
+upload: {
+  config: {
+    sizeLimit: 250 * 1024 * 1024, // 250MB
+  },
+}
+```
+</Tab>
+</Tabs>
+
+## Environment variables
+
+All configuration values can be set via environment variables:
+
+```bash .env
+# Server
+HOST=0.0.0.0
+PORT=1337
+APP_KEYS=key1,key2,key3,key4
+
+# Secrets
+API_TOKEN_SALT=your-api-token-salt
+ADMIN_JWT_SECRET=your-admin-jwt-secret
+TRANSFER_TOKEN_SALT=your-transfer-token-salt
+JWT_SECRET=your-jwt-secret
+
+# Database
+DATABASE_CLIENT=postgres
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=doubleespresso
+DATABASE_USERNAME=strapi
+DATABASE_PASSWORD=your-password
+DATABASE_SSL=false
+
+# AWS S3
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_ACCESS_SECRET=your-secret-key
+AWS_REGION=us-east-1
+AWS_BUCKET=your-bucket-name
+
+# Email
+SENDGRID_API_KEY=your-sendgrid-key
+
+# Other
+NODE_ENV=production
+```
+
+<Tip>
+Use `openssl rand -base64 32` to generate secure random strings for secrets.
+</Tip>
+
+## Production checklist
+
+Before deploying to production:
+
+<Steps>
+<Step title="Set NODE_ENV">
+  ```bash
+  NODE_ENV=production
+  ```
+</Step>
+
+<Step title="Use production database">
+  Configure PostgreSQL or MySQL instead of SQLite.
+</Step>
+
+<Step title="Generate secure secrets">
+  Generate new values for all secret keys.
+</Step>
+
+<Step title="Configure CORS">
+  Set specific allowed origins instead of `*`.
+</Step>
+
+<Step title="Enable SSL">
+  Use HTTPS for all connections.
+</Step>
+
+<Step title="Set up file storage">
+  Configure S3 or Cloudinary for media uploads.
+</Step>
+
+<Step title="Configure email">
+  Set up email provider for password resets.
+</Step>
+
+<Step title="Enable rate limiting">
+  Protect against brute force attacks.
+</Step>
+</Steps>
+
+<Warning>
+Never use default secrets or SQLite in production environments.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+<Card title="API reference" icon="code" href="/doubleespresso/api">
+  Explore API endpoints
+</Card>
+
+<Card title="Contributing" icon="git-branch" href="/doubleespresso/contributing">
+  Learn how to contribute
+</Card>
+</CardGroup>

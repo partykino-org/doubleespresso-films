@@ -1,0 +1,274 @@
+---
+title: Installation
+description: Install and set up DoubleEspresso Strapi Admin locally
+---
+
+## Prerequisites
+
+Before installing DoubleEspresso, ensure you have the following installed:
+
+- **Node.js** - Version 18.x or 20.x (LTS versions recommended)
+- **npm** or **yarn** - Package manager
+- **Database** - PostgreSQL 11+, MySQL 5.7+, or SQLite 3
+
+<Tip>
+Use `node --version` to check your Node.js version. If you need to upgrade, visit [nodejs.org](https://nodejs.org).
+</Tip>
+
+## Installation steps
+
+<Steps>
+<Step title="Clone the repository">
+  Clone the DoubleEspresso repository to your local machine:
+
+  ```bash
+  git clone https://github.com/partykino-org/doubleespresso-strapi-admin.git
+  cd doubleespresso-strapi-admin
+  ```
+</Step>
+
+<Step title="Install dependencies">
+  Install all required npm packages:
+
+  ```bash
+  npm install
+  # or
+  yarn install
+  ```
+
+  <Note>
+  This may take a few minutes depending on your internet connection.
+  </Note>
+</Step>
+
+<Step title="Configure environment variables">
+  Create a `.env` file in the root directory:
+
+  ```bash
+  cp .env.example .env
+  ```
+
+  Edit the `.env` file with your configuration. See [Environment variables](#environment-variables) below.
+</Step>
+
+<Step title="Set up the database">
+  Initialize the database schema:
+
+  ```bash
+  npm run strapi build
+  ```
+
+  This creates the necessary database tables and structures.
+</Step>
+
+<Step title="Start the development server">
+  Launch the Strapi admin panel:
+
+  ```bash
+  npm run develop
+  ```
+
+  The admin panel will be available at `http://localhost:1337/admin`.
+</Step>
+
+<Step title="Create admin user">
+  On first launch, you'll be prompted to create an administrator account. Fill in:
+  
+  - First name and last name
+  - Email address
+  - Password (minimum 8 characters)
+
+  <Check>
+  Once created, you can log in to the admin panel.
+  </Check>
+</Step>
+</Steps>
+
+## Environment variables
+
+Configure these essential environment variables in your `.env` file:
+
+<ParamField path="HOST" type="string" default="0.0.0.0">
+  The host to bind the server to.
+</ParamField>
+
+<ParamField path="PORT" type="integer" default="1337">
+  The port to run the server on.
+</ParamField>
+
+<ParamField path="APP_KEYS" type="string" required>
+  Comma-separated list of keys for session encryption. Generate with `openssl rand -base64 32`.
+</ParamField>
+
+<ParamField path="API_TOKEN_SALT" type="string" required>
+  Salt for API token generation. Generate with `openssl rand -base64 32`.
+</ParamField>
+
+<ParamField path="ADMIN_JWT_SECRET" type="string" required>
+  Secret for admin JWT tokens. Generate with `openssl rand -base64 32`.
+</ParamField>
+
+<ParamField path="TRANSFER_TOKEN_SALT" type="string" required>
+  Salt for transfer tokens. Generate with `openssl rand -base64 32`.
+</ParamField>
+
+<ParamField path="JWT_SECRET" type="string" required>
+  Secret for user JWT tokens. Generate with `openssl rand -base64 32`.
+</ParamField>
+
+<ParamField path="DATABASE_CLIENT" type="string" default="sqlite">
+  Database client: `postgres`, `mysql`, or `sqlite`.
+</ParamField>
+
+<ParamField path="DATABASE_HOST" type="string">
+  Database host address (not needed for SQLite).
+</ParamField>
+
+<ParamField path="DATABASE_PORT" type="integer">
+  Database port (5432 for PostgreSQL, 3306 for MySQL).
+</ParamField>
+
+<ParamField path="DATABASE_NAME" type="string">
+  Name of the database.
+</ParamField>
+
+<ParamField path="DATABASE_USERNAME" type="string">
+  Database user.
+</ParamField>
+
+<ParamField path="DATABASE_PASSWORD" type="string">
+  Database password.
+</ParamField>
+
+<ParamField path="NODE_ENV" type="string" default="development">
+  Environment mode: `development`, `staging`, or `production`.
+</ParamField>
+
+### Example configuration
+
+<Tabs>
+<Tab title="SQLite (Development)">
+  ```bash .env
+  HOST=0.0.0.0
+  PORT=1337
+  APP_KEYS=your-app-key-here
+  API_TOKEN_SALT=your-api-token-salt
+  ADMIN_JWT_SECRET=your-admin-jwt-secret
+  TRANSFER_TOKEN_SALT=your-transfer-token-salt
+  JWT_SECRET=your-jwt-secret
+  DATABASE_CLIENT=sqlite
+  DATABASE_FILENAME=.tmp/data.db
+  NODE_ENV=development
+  ```
+</Tab>
+
+<Tab title="PostgreSQL (Production)">
+  ```bash .env
+  HOST=0.0.0.0
+  PORT=1337
+  APP_KEYS=your-app-key-here
+  API_TOKEN_SALT=your-api-token-salt
+  ADMIN_JWT_SECRET=your-admin-jwt-secret
+  TRANSFER_TOKEN_SALT=your-transfer-token-salt
+  JWT_SECRET=your-jwt-secret
+  DATABASE_CLIENT=postgres
+  DATABASE_HOST=localhost
+  DATABASE_PORT=5432
+  DATABASE_NAME=doubleespresso
+  DATABASE_USERNAME=strapi
+  DATABASE_PASSWORD=your-secure-password
+  DATABASE_SSL=false
+  NODE_ENV=production
+  ```
+</Tab>
+
+<Tab title="MySQL">
+  ```bash .env
+  HOST=0.0.0.0
+  PORT=1337
+  APP_KEYS=your-app-key-here
+  API_TOKEN_SALT=your-api-token-salt
+  ADMIN_JWT_SECRET=your-admin-jwt-secret
+  TRANSFER_TOKEN_SALT=your-transfer-token-salt
+  JWT_SECRET=your-jwt-secret
+  DATABASE_CLIENT=mysql
+  DATABASE_HOST=localhost
+  DATABASE_PORT=3306
+  DATABASE_NAME=doubleespresso
+  DATABASE_USERNAME=strapi
+  DATABASE_PASSWORD=your-secure-password
+  NODE_ENV=production
+  ```
+</Tab>
+</Tabs>
+
+<Warning>
+Never commit your `.env` file to version control. Keep your secrets secure.
+</Warning>
+
+## Verify installation
+
+After starting the server, verify the installation:
+
+1. Open `http://localhost:1337/admin` in your browser
+2. Log in with your admin credentials
+3. You should see the Strapi admin dashboard
+
+<Check>
+If you see the dashboard, your installation is successful!
+</Check>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Port already in use">
+  If port 1337 is already in use, change the `PORT` in your `.env` file:
+  
+  ```bash
+  PORT=3000
+  ```
+</Accordion>
+
+<Accordion title="Database connection failed">
+  Verify your database credentials and ensure the database server is running:
+  
+  ```bash
+  # For PostgreSQL
+  psql -U postgres -c "SELECT version();"
+  
+  # For MySQL
+  mysql -u root -p -e "SELECT VERSION();"
+  ```
+</Accordion>
+
+<Accordion title="Node version mismatch">
+  Strapi requires Node.js 18.x or 20.x. Use [nvm](https://github.com/nvm-sh/nvm) to manage versions:
+  
+  ```bash
+  nvm install 20
+  nvm use 20
+  ```
+</Accordion>
+
+<Accordion title="Build errors">
+  Clear the build cache and reinstall:
+  
+  ```bash
+  rm -rf node_modules .cache build
+  npm install
+  npm run build
+  ```
+</Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+<Card title="Quickstart guide" icon="rocket" href="/doubleespresso/quickstart">
+  Learn how to add your first movie
+</Card>
+
+<Card title="Configuration" icon="gear" href="/doubleespresso/configuration">
+  Customize your CMS settings
+</Card>
+</CardGroup>

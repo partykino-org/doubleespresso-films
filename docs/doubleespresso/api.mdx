@@ -1,0 +1,612 @@
+---
+title: API reference
+description: Public API endpoints and interfaces for DoubleEspresso
+---
+
+DoubleEspresso automatically generates REST and GraphQL APIs for all content types. This page documents the public interfaces available for accessing movie data.
+
+## Base URL
+
+All API requests are made to:
+
+```
+http://localhost:1337/api
+```
+
+For production, replace with your deployed domain.
+
+## Authentication
+
+Most read operations are public by default. Write operations require authentication.
+
+### API tokens
+
+Generate an API token in the admin panel:
+
+1. Navigate to **Settings** > **API Tokens**
+2. Click **Create new API Token**
+3. Set permissions and expiration
+4. Copy the generated token
+
+Use the token in requests:
+
+```bash
+curl http://localhost:1337/api/movies \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+### JWT authentication
+
+For user-based authentication:
+
+<CodeGroup>
+```bash Login
+curl -X POST http://localhost:1337/api/auth/local \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identifier": "user@example.com",
+    "password": "password123"
+  }'
+```
+
+```json Response
+{
+  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "username": "user",
+    "email": "user@example.com"
+  }
+}
+```
+</CodeGroup>
+
+Use the JWT in subsequent requests:
+
+```bash
+curl http://localhost:1337/api/movies \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Movies API
+
+### List all movies
+
+<ParamField query="sort" type="string">
+  Sort by field. Prefix with `:desc` for descending order.
+  
+  Examples: `title`, `releaseYear:desc`, `createdAt:desc`
+</ParamField>
+
+<ParamField query="filters" type="object">
+  Filter results by field values. Supports operators like `$eq`, `$ne`, `$lt`, `$gt`, `$contains`.
+</ParamField>
+
+<ParamField query="populate" type="string">
+  Populate relations. Use `*` for all relations or specify fields.
+</ParamField>
+
+<ParamField query="pagination[page]" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="pagination[pageSize]" type="integer" default="25">
+  Number of results per page (max 100).
+</ParamField>
+
+<RequestExample>
+```bash Get all movies
+curl http://localhost:1337/api/movies
+```
+
+```bash With filters
+curl "http://localhost:1337/api/movies?filters[releaseYear][$gte]=2000&sort=releaseYear:desc"
+```
+
+```bash With relations
+curl "http://localhost:1337/api/movies?populate=*"
+```
+
+```javascript JavaScript
+const response = await fetch('http://localhost:1337/api/movies?populate=*');
+const { data } = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'http://localhost:1337/api/movies',
+    params={'populate': '*'}
+)
+movies = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success response
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "title": "The Shawshank Redemption",
+        "originalTitle": "The Shawshank Redemption",
+        "releaseYear": 1994,
+        "runtime": 142,
+        "synopsis": "Two imprisoned men bond over a number of years...",
+        "overview": "Framed in the 1940s for the double murder...",
+        "tagline": "Fear can hold you prisoner. Hope can set you free.",
+        "rating": "R",
+        "language": "English",
+        "country": "USA",
+        "imdbId": "tt0111161",
+        "tmdbId": 278,
+        "createdAt": "2024-01-15T10:30:00.000Z",
+        "updatedAt": "2024-01-15T10:30:00.000Z",
+        "publishedAt": "2024-01-15T10:35:00.000Z",
+        "poster": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "name": "shawshank-poster.jpg",
+              "url": "/uploads/shawshank_poster_abc123.jpg",
+              "width": 500,
+              "height": 750
+            }
+          }
+        },
+        "genres": {
+          "data": [
+            {
+              "id": 1,
+              "attributes": {
+                "name": "Drama"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 25,
+      "pageCount": 1,
+      "total": 1
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Get single movie
+
+<ParamField path="id" type="integer" required>
+  The movie ID.
+</ParamField>
+
+<RequestExample>
+```bash Get movie by ID
+curl http://localhost:1337/api/movies/1?populate=*
+```
+
+```javascript JavaScript
+const response = await fetch('http://localhost:1337/api/movies/1?populate=*');
+const { data } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success response
+{
+  "data": {
+    "id": 1,
+    "attributes": {
+      "title": "The Shawshank Redemption",
+      "releaseYear": 1994,
+      "runtime": 142,
+      "synopsis": "Two imprisoned men bond over a number of years...",
+      "rating": "R",
+      "poster": {
+        "data": {
+          "id": 1,
+          "attributes": {
+            "url": "/uploads/shawshank_poster_abc123.jpg"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Create movie
+
+<ParamField body="data" type="object" required>
+  Movie data object containing all fields.
+</ParamField>
+
+<RequestExample>
+```bash Create movie
+curl -X POST http://localhost:1337/api/movies \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "title": "Inception",
+      "releaseYear": 2010,
+      "runtime": 148,
+      "synopsis": "A thief who steals corporate secrets...",
+      "rating": "PG-13",
+      "language": "English"
+    }
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('http://localhost:1337/api/movies', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    data: {
+      title: 'Inception',
+      releaseYear: 2010,
+      runtime: 148
+    }
+  })
+});
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success response
+{
+  "data": {
+    "id": 2,
+    "attributes": {
+      "title": "Inception",
+      "releaseYear": 2010,
+      "runtime": 148,
+      "createdAt": "2024-01-15T11:00:00.000Z",
+      "updatedAt": "2024-01-15T11:00:00.000Z",
+      "publishedAt": null
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Update movie
+
+<ParamField path="id" type="integer" required>
+  The movie ID to update.
+</ParamField>
+
+<ParamField body="data" type="object" required>
+  Updated movie data.
+</ParamField>
+
+<RequestExample>
+```bash Update movie
+curl -X PUT http://localhost:1337/api/movies/1 \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "runtime": 143
+    }
+  }'
+```
+</RequestExample>
+
+### Delete movie
+
+<ParamField path="id" type="integer" required>
+  The movie ID to delete.
+</ParamField>
+
+<RequestExample>
+```bash Delete movie
+curl -X DELETE http://localhost:1337/api/movies/1 \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success response
+{
+  "data": {
+    "id": 1,
+    "attributes": {
+      "title": "The Shawshank Redemption"
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Genres API
+
+### List genres
+
+<RequestExample>
+```bash Get all genres
+curl http://localhost:1337/api/genres
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "name": "Drama",
+        "slug": "drama"
+      }
+    },
+    {
+      "id": 2,
+      "attributes": {
+        "name": "Action",
+        "slug": "action"
+      }
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Actors API
+
+### List actors
+
+<RequestExample>
+```bash Get all actors
+curl http://localhost:1337/api/actors?populate=photo
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "name": "Morgan Freeman",
+        "birthDate": "1937-06-01",
+        "biography": "Morgan Freeman is an American actor...",
+        "photo": {
+          "data": {
+            "id": 5,
+            "attributes": {
+              "url": "/uploads/morgan_freeman_photo.jpg"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## GraphQL API
+
+DoubleEspresso also provides a GraphQL endpoint at `/graphql`.
+
+### Query movies
+
+<RequestExample>
+```graphql Query
+query {
+  movies {
+    data {
+      id
+      attributes {
+        title
+        releaseYear
+        runtime
+        genres {
+          data {
+            attributes {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+```bash cURL
+curl -X POST http://localhost:1337/graphql \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ movies { data { id attributes { title releaseYear } } } }"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": {
+    "movies": {
+      "data": [
+        {
+          "id": "1",
+          "attributes": {
+            "title": "The Shawshank Redemption",
+            "releaseYear": 1994,
+            "runtime": 142,
+            "genres": {
+              "data": [
+                {
+                  "attributes": {
+                    "name": "Drama"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+</ResponseExample>
+
+## File uploads
+
+Upload files to the media library:
+
+<RequestExample>
+```bash Upload file
+curl -X POST http://localhost:1337/api/upload \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -F "files=@/path/to/poster.jpg"
+```
+
+```javascript JavaScript
+const formData = new FormData();
+formData.append('files', fileInput.files[0]);
+
+const response = await fetch('http://localhost:1337/api/upload', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  },
+  body: formData
+});
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": 1,
+    "name": "poster.jpg",
+    "url": "/uploads/poster_abc123.jpg",
+    "mime": "image/jpeg",
+    "size": 245.67,
+    "width": 500,
+    "height": 750
+  }
+]
+```
+</ResponseExample>
+
+## Error responses
+
+<ResponseField name="error" type="object">
+  Error information object.
+  
+  <Expandable title="Error properties">
+    <ResponseField name="status" type="integer">
+      HTTP status code.
+    </ResponseField>
+    
+    <ResponseField name="name" type="string">
+      Error name (e.g., "ValidationError", "NotFoundError").
+    </ResponseField>
+    
+    <ResponseField name="message" type="string">
+      Human-readable error message.
+    </ResponseField>
+    
+    <ResponseField name="details" type="object">
+      Additional error details and validation errors.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 400 Bad Request
+{
+  "error": {
+    "status": 400,
+    "name": "ValidationError",
+    "message": "Missing required field: title",
+    "details": {
+      "errors": [
+        {
+          "path": ["title"],
+          "message": "This field is required"
+        }
+      ]
+    }
+  }
+}
+```
+
+```json 401 Unauthorized
+{
+  "error": {
+    "status": 401,
+    "name": "UnauthorizedError",
+    "message": "Invalid token"
+  }
+}
+```
+
+```json 404 Not Found
+{
+  "error": {
+    "status": 404,
+    "name": "NotFoundError",
+    "message": "Movie not found"
+  }
+}
+```
+</ResponseExample>
+
+## Rate limiting
+
+API requests are rate-limited to prevent abuse:
+
+- **Anonymous requests**: 100 requests per 15 minutes
+- **Authenticated requests**: 1000 requests per 15 minutes
+
+Rate limit headers are included in responses:
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1642345678
+```
+
+<Warning>
+Exceeding rate limits returns a 429 Too Many Requests error.
+</Warning>
+
+## Webhooks
+
+Configure webhooks to receive notifications when content changes:
+
+1. Navigate to **Settings** > **Webhooks**
+2. Click **Create new webhook**
+3. Set the URL and select events to trigger on
+4. Save the webhook
+
+Supported events:
+- `entry.create`
+- `entry.update`
+- `entry.delete`
+- `entry.publish`
+- `entry.unpublish`
+
+<Note>
+Webhook payloads include the full entry data and event metadata.
+</Note>

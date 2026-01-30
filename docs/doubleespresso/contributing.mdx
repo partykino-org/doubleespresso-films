@@ -1,0 +1,485 @@
+---
+title: Contributing
+description: Development guide for contributing to DoubleEspresso
+---
+
+Thank you for your interest in contributing to DoubleEspresso! This guide will help you set up your development environment and understand our development workflow.
+
+## Development setup
+
+### Prerequisites
+
+- Node.js 18.x or 20.x
+- npm or yarn
+- Git
+- PostgreSQL or MySQL (for testing)
+
+### Fork and clone
+
+<Steps>
+<Step title="Fork the repository">
+  Fork the [doubleespresso-strapi-admin](https://github.com/partykino-org/doubleespresso-strapi-admin) repository to your GitHub account.
+</Step>
+
+<Step title="Clone your fork">
+  ```bash
+  git clone https://github.com/YOUR_USERNAME/doubleespresso-strapi-admin.git
+  cd doubleespresso-strapi-admin
+  ```
+</Step>
+
+<Step title="Add upstream remote">
+  ```bash
+  git remote add upstream https://github.com/partykino-org/doubleespresso-strapi-admin.git
+  ```
+</Step>
+</Steps>
+
+## Development workflow
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Set up environment
+
+Create a `.env` file for development:
+
+```bash .env
+HOST=0.0.0.0
+PORT=1337
+APP_KEYS=development-key-1,development-key-2
+API_TOKEN_SALT=development-api-token-salt
+ADMIN_JWT_SECRET=development-admin-jwt-secret
+TRANSFER_TOKEN_SALT=development-transfer-token-salt
+JWT_SECRET=development-jwt-secret
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=.tmp/data.db
+NODE_ENV=development
+```
+
+<Warning>
+Never commit your `.env` file. Development secrets should not be used in production.
+</Warning>
+
+### Run development server
+
+Start the development server with auto-reload:
+
+```bash
+npm run develop
+```
+
+The admin panel will be available at `http://localhost:1337/admin`.
+
+<Tip>
+The development server automatically rebuilds when you make changes to the code.
+</Tip>
+
+### Build for production
+
+Build the admin panel and server:
+
+```bash
+npm run build
+```
+
+Start the production server:
+
+```bash
+npm run start
+```
+
+## Project structure
+
+```
+doubleespresso-strapi-admin/
+├── config/              # Configuration files
+│   ├── admin.js        # Admin panel config
+│   ├── api.js          # API config
+│   ├── database.js     # Database config
+│   ├── middlewares.js  # Middleware config
+│   ├── plugins.js      # Plugin config
+│   └── server.js       # Server config
+├── database/           # Database migrations
+│   └── migrations/
+├── public/             # Static files
+│   └── uploads/        # Uploaded media
+├── src/
+│   ├── admin/          # Admin panel customizations
+│   │   ├── app.js      # Admin app entry
+│   │   └── webpack.config.js
+│   ├── api/            # API definitions
+│   │   ├── movie/      # Movie content type
+│   │   ├── genre/      # Genre content type
+│   │   └── actor/      # Actor content type
+│   ├── extensions/     # Core extensions
+│   └── index.js        # Application entry
+├── .env                # Environment variables (not committed)
+├── .env.example        # Example environment file
+├── package.json        # Dependencies
+└── README.md           # Project readme
+```
+
+### Content type structure
+
+Each content type follows this structure:
+
+```
+src/api/movie/
+├── content-types/
+│   └── movie/
+│       └── schema.json      # Content type definition
+├── controllers/
+│   └── movie.js            # Custom controllers
+├── routes/
+│   └── movie.js            # Custom routes
+├── services/
+│   └── movie.js            # Business logic
+└── policies/
+    └── movie.js            # Access policies
+```
+
+## Code style
+
+### ESLint
+
+We use ESLint for code linting. Run the linter:
+
+```bash
+npm run lint
+```
+
+Fix auto-fixable issues:
+
+```bash
+npm run lint:fix
+```
+
+### Prettier
+
+Format code with Prettier:
+
+```bash
+npm run format
+```
+
+<Note>
+Code must pass linting before being merged. Set up your editor to run ESLint and Prettier on save.
+</Note>
+
+## Testing
+
+### Run tests
+
+Execute the test suite:
+
+```bash
+npm run test
+```
+
+Run tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+### Run specific tests
+
+```bash
+npm run test -- movie.test.js
+```
+
+### Test coverage
+
+Generate coverage report:
+
+```bash
+npm run test:coverage
+```
+
+Coverage reports are generated in the `coverage/` directory.
+
+<Tip>
+Aim for at least 80% code coverage for new features.
+</Tip>
+
+## Creating content types
+
+### Using the admin panel
+
+<Steps>
+<Step title="Open Content-Type Builder">
+  Navigate to **Content-Type Builder** in the admin panel sidebar.
+</Step>
+
+<Step title="Create new collection type">
+  Click **Create new collection type** and enter the name (e.g., "Studio").
+</Step>
+
+<Step title="Add fields">
+  Add fields to your content type:
+  - Click **Add another field**
+  - Select field type
+  - Configure field options
+  - Save
+</Step>
+
+<Step title="Save and restart">
+  Click **Save** and restart the server to apply changes.
+</Step>
+</Steps>
+
+### Manually creating content types
+
+Create a schema file in `src/api/[content-type]/content-types/[content-type]/schema.json`:
+
+```json src/api/studio/content-types/studio/schema.json
+{
+  "kind": "collectionType",
+  "collectionName": "studios",
+  "info": {
+    "singularName": "studio",
+    "pluralName": "studios",
+    "displayName": "Studio"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "foundedYear": {
+      "type": "integer"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "movies": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::movie.movie",
+      "mappedBy": "studio"
+    }
+  }
+}
+```
+
+## Custom controllers
+
+Add custom logic in controllers:
+
+```javascript src/api/movie/controllers/movie.js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::movie.movie', ({ strapi }) => ({
+  // Custom action to get movies by year
+  async findByYear(ctx) {
+    const { year } = ctx.params;
+    
+    const movies = await strapi.entityService.findMany('api::movie.movie', {
+      filters: { releaseYear: year },
+      populate: ['genres', 'poster'],
+    });
+    
+    return movies;
+  },
+  
+  // Override default find
+  async find(ctx) {
+    // Add custom logic before calling default
+    const { data, meta } = await super.find(ctx);
+    
+    // Add custom logic after
+    return { data, meta };
+  },
+}));
+```
+
+## Custom routes
+
+Define custom routes in `src/api/movie/routes/movie.js`:
+
+```javascript src/api/movie/routes/custom-movie.js
+module.exports = {
+  routes: [
+    {
+      method: 'GET',
+      path: '/movies/year/:year',
+      handler: 'movie.findByYear',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+  ],
+};
+```
+
+## Database migrations
+
+Create migrations for schema changes:
+
+```bash
+npm run strapi generate:migration migration-name
+```
+
+Edit the generated file in `database/migrations/`:
+
+```javascript
+module.exports = {
+  async up(knex) {
+    // Migration up logic
+    await knex.schema.alterTable('movies', (table) => {
+      table.string('imdb_id');
+    });
+  },
+  
+  async down(knex) {
+    // Migration down logic
+    await knex.schema.alterTable('movies', (table) => {
+      table.dropColumn('imdb_id');
+    });
+  },
+};
+```
+
+Run migrations:
+
+```bash
+npm run strapi migrate
+```
+
+## Git workflow
+
+### Create a feature branch
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+### Make your changes
+
+1. Write code
+2. Add tests
+3. Update documentation
+4. Run linter and tests
+
+```bash
+npm run lint
+npm run test
+```
+
+### Commit your changes
+
+Use conventional commit messages:
+
+```bash
+git add .
+git commit -m "feat: add studio content type"
+```
+
+Commit message format:
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes
+- `refactor:` - Code refactoring
+- `test:` - Test changes
+- `chore:` - Build/tooling changes
+
+### Push and create PR
+
+```bash
+git push origin feature/your-feature-name
+```
+
+Create a pull request on GitHub with:
+- Clear title and description
+- Reference to related issues
+- Screenshots (if UI changes)
+- Test results
+
+## Pull request checklist
+
+Before submitting a PR, ensure:
+
+- [ ] Code follows project style guidelines
+- [ ] All tests pass
+- [ ] New features have tests
+- [ ] Documentation is updated
+- [ ] Commit messages follow conventions
+- [ ] No merge conflicts with main branch
+- [ ] PR description is clear and complete
+
+## Debugging
+
+### Enable debug mode
+
+Set debug environment variable:
+
+```bash
+DEBUG=strapi:* npm run develop
+```
+
+### VS Code debugging
+
+Create `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Strapi",
+      "program": "${workspaceFolder}/node_modules/@strapi/strapi/bin/strapi.js",
+      "args": ["develop"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
+```
+
+### Database debugging
+
+Enable query logging in `config/database.js`:
+
+```javascript
+module.exports = ({ env }) => ({
+  connection: {
+    // ... connection config
+    debug: true, // Enable query logging
+  },
+});
+```
+
+## Getting help
+
+- **GitHub Issues** - Report bugs or request features
+- **Discussions** - Ask questions and share ideas
+- **Discord** - Join our community chat
+- **Documentation** - Check the docs first
+
+## Code of conduct
+
+Please be respectful and constructive in all interactions. We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/).
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the same license as the project.
+
+<Check>
+Thank you for contributing to DoubleEspresso! 🎬
+</Check>
