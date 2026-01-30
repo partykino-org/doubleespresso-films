@@ -1,0 +1,321 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for doubleespresso-films
+---
+
+## Installation issues
+
+### npm install fails
+
+**Problem**: Dependencies fail to install
+
+**Solutions**:
+
+1. Clear npm cache:
+```bash
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+2. Use a different package manager:
+```bash
+yarn install
+# or
+pnpm install
+```
+
+3. Check Node.js version:
+```bash
+node --version  # Should be 20 or higher
+```
+
+### TypeScript errors during build
+
+**Problem**: Type errors prevent compilation
+
+**Solutions**:
+
+1. Ensure TypeScript is installed:
+```bash
+npm install --save-dev typescript @types/node @types/react @types/react-dom
+```
+
+2. Check `tsconfig.json` configuration
+3. Run type checking:
+```bash
+npx tsc --noEmit
+```
+
+## Runtime issues
+
+### Films not loading
+
+**Problem**: Film catalog shows "Loading..." indefinitely
+
+**Possible causes**:
+
+1. **API endpoint unreachable**
+   - Check network connection
+   - Verify API URL: `https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000`
+   - Check browser console for CORS errors
+
+2. **API response format changed**
+   - Verify response structure matches expected format
+   - Check browser Network tab for API response
+
+**Solutions**:
+
+```typescript
+// Add error handling in Films.tsx
+const getFilms = async () => {
+  try {
+    const res = await fetch("https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000");
+    
+    if (!res.ok) {
+      console.error("API error:", res.status, res.statusText);
+      throw new Error("Failed to fetch CARDS");
+    }
+    
+    const data = await res.json();
+    console.log("API response:", data); // Debug log
+    setFilms(data.data);
+  } catch (error) {
+    console.error("Failed to fetch films:", error);
+  }
+};
+```
+
+### Video player not working
+
+**Problem**: Video doesn't play or controls don't respond
+
+**Solutions**:
+
+1. **Check video URL**
+   - Verify `film_url` is accessible
+   - Test URL directly in browser
+   - Check for CORS headers on video server
+
+2. **Browser compatibility**
+   - Ensure browser supports HTML5 video
+   - Check video codec compatibility
+   - Try different browser
+
+3. **Mobile issues**
+   - On mobile, native controls are used
+   - Check `isMobile` detection logic
+   - Verify video format is mobile-compatible
+
+### Keyboard shortcuts not working
+
+**Problem**: Space and arrow keys don't control video
+
+**Solutions**:
+
+1. Ensure video player has focus
+2. Check for conflicting keyboard event listeners
+3. Verify event listener is attached:
+
+```typescript
+// In VideoPlayer.tsx
+useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    console.log("Key pressed:", e.code); // Debug log
+    // ... rest of handler
+  };
+  
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, []);
+```
+
+### Theme not persisting
+
+**Problem**: Theme resets on page reload
+
+**Solutions**:
+
+1. Check localStorage is enabled in browser
+2. Verify theme context is properly initialized:
+
+```typescript
+// Check in browser console
+localStorage.getItem("theme");
+```
+
+3. Clear localStorage and try again:
+```javascript
+localStorage.clear();
+```
+
+## Styling issues
+
+### Tailwind classes not applying
+
+**Problem**: Styles don't appear as expected
+
+**Solutions**:
+
+1. Verify Tailwind is configured:
+```bash
+# Check postcss.config.mjs exists
+cat postcss.config.mjs
+```
+
+2. Restart development server:
+```bash
+npm run dev
+```
+
+3. Check for class name conflicts:
+```typescript
+// Use cn utility to merge classes
+import { cn } from "@/lib/utils";
+className={cn("base-class", "additional-class")}
+```
+
+### Dark mode not working
+
+**Problem**: Dark theme doesn't apply styles
+
+**Solutions**:
+
+1. Verify `dark` class is added to `<html>` element:
+```javascript
+// Check in browser console
+document.documentElement.classList.contains('dark');
+```
+
+2. Ensure dark mode variants are used:
+```typescript
+className="bg-white dark:bg-black"
+```
+
+## Performance issues
+
+### Slow page load
+
+**Problem**: Application takes long to load
+
+**Solutions**:
+
+1. Check network tab for slow requests
+2. Optimize API pagination:
+```typescript
+// Reduce page size if needed
+pagination[pageSize]=100  // Instead of 1000
+```
+
+3. Enable production build:
+```bash
+npm run build
+npm run start
+```
+
+### Video buffering
+
+**Problem**: Video playback is choppy
+
+**Solutions**:
+
+1. Check video file size and format
+2. Verify network bandwidth
+3. Consider using adaptive streaming (HLS/DASH)
+4. Reduce playback quality if possible
+
+## Development issues
+
+### Hot reload not working
+
+**Problem**: Changes don't reflect without manual refresh
+
+**Solutions**:
+
+1. Restart development server
+2. Clear `.next` directory:
+```bash
+rm -rf .next
+npm run dev
+```
+
+3. Check file watcher limits (Linux):
+```bash
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+### ESLint errors
+
+**Problem**: Linting errors prevent development
+
+**Solutions**:
+
+1. Run lint with auto-fix:
+```bash
+npm run lint -- --fix
+```
+
+2. Check ESLint configuration:
+```bash
+cat eslint.config.mjs
+```
+
+3. Disable specific rules if needed (not recommended):
+```javascript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+```
+
+## API integration issues
+
+### CORS errors
+
+**Problem**: Browser blocks API requests
+
+**Solutions**:
+
+1. Configure CORS on backend (Strapi)
+2. Use proxy in development:
+
+```typescript
+// next.config.ts
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://admin.doublekava.watch/api/:path*',
+      },
+    ];
+  },
+};
+```
+
+### Authentication errors
+
+**Problem**: API requires authentication
+
+**Solutions**:
+
+1. Add authentication headers:
+```typescript
+const res = await fetch(url, {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+  },
+});
+```
+
+2. Configure API token in environment variables
+
+## Getting help
+
+If you're still experiencing issues:
+
+1. Check browser console for error messages
+2. Review [GitHub Issues](https://github.com/partykino-org/doubleespresso-films/issues)
+3. Create a new issue with:
+   - Error message
+   - Steps to reproduce
+   - Environment details (OS, browser, Node version)
+   - Screenshots if applicable
