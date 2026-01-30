@@ -1,0 +1,294 @@
+---
+title: Configuration
+description: Configuration options and environment variables for doubleespresso-films
+---
+
+## Environment variables
+
+### Google Analytics
+
+Configure Google Analytics tracking by setting the measurement ID:
+
+**File**: `app/lib/gtag.js`
+
+```javascript
+export const GA_MEASUREMENT_ID = "G-XXXXXXXXXX"; // Your GA4 measurement ID
+```
+
+Or use an environment variable:
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+### API endpoint
+
+The Strapi API endpoint is hardcoded in the Films component. To use a different backend:
+
+**File**: `app/components/films-list/Films.tsx`
+
+```typescript
+const res = await fetch(
+  "https://your-api-endpoint.com/api/cards?populate=*&pagination[pageSize]=1000"
+);
+```
+
+Consider moving this to an environment variable:
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-api-endpoint.com
+```
+
+Then update the fetch call:
+
+```typescript
+const res = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/api/cards?populate=*&pagination[pageSize]=1000`
+);
+```
+
+## Next.js configuration
+
+### Basic configuration
+
+**File**: `next.config.ts`
+
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+```
+
+### Common configuration options
+
+#### Image domains
+
+If you're loading images from external domains:
+
+```typescript
+const nextConfig: NextConfig = {
+  images: {
+    domains: ['doubleespresso-films.s3.eu-north-1.amazonaws.com'],
+  },
+};
+```
+
+#### Environment variables
+
+Add public environment variables:
+
+```typescript
+const nextConfig: NextConfig = {
+  env: {
+    CUSTOM_KEY: 'my-value',
+  },
+};
+```
+
+## TypeScript configuration
+
+**File**: `tsconfig.json`
+
+Key settings:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "strict": true,
+    "paths": {
+      "@/*": ["./app/*"]
+    }
+  }
+}
+```
+
+The `@/*` path alias allows importing from the `app` directory:
+
+```typescript
+import Component from "@/components/Component";
+```
+
+## Tailwind CSS configuration
+
+Tailwind CSS 4 is configured via PostCSS:
+
+**File**: `postcss.config.mjs`
+
+```javascript
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+};
+```
+
+### Customizing Tailwind
+
+Add custom configuration in `globals.css`:
+
+```css
+@theme {
+  --color-primary: #your-color;
+  --font-family-custom: 'Your Font', sans-serif;
+}
+```
+
+## Metadata configuration
+
+### Site metadata
+
+**File**: `app/layout.tsx`
+
+```typescript
+export const metadata: Metadata = {
+  title: "Your Site Title",
+  description: "Your site description",
+  icons: {
+    icon: "https://your-icon-url.com/icon.png",
+  },
+  openGraph: {
+    title: "Your Site Title",
+    description: "Your site description",
+    url: "https://your-site.com",
+    siteName: "your-site.com",
+    images: [
+      {
+        url: "https://your-og-image.com/image.png",
+        width: 1200,
+        height: 630,
+        alt: "Preview image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
+```
+
+## Component configuration
+
+### shadcn/ui components
+
+**File**: `components.json`
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "app/globals.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils"
+  }
+}
+```
+
+## Theme configuration
+
+The theme system uses localStorage and CSS classes:
+
+### Default theme
+
+Set the default theme in `api-context.tsx`:
+
+```typescript
+const [theme, setTheme] = useState<Theme>("dark"); // or "light"
+```
+
+### Theme persistence
+
+Theme preference is automatically saved to localStorage:
+
+```typescript
+localStorage.setItem("theme", newTheme);
+```
+
+### System preference detection
+
+The app detects system color scheme:
+
+```typescript
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+```
+
+## Video player configuration
+
+### Default settings
+
+Customize default video player settings in `VideoPlayer.tsx`:
+
+```typescript
+// Default playback rate
+const [playbackRate, setPlaybackRate] = useState<number>(1);
+
+// Default volume
+const [previousVolume, setPreviousVolume] = useState<number>(0.5);
+
+// Available playback speeds
+<option value={0.5}>0.5x</option>
+<option value={1}>1x</option>
+<option value={1.5}>1.5x</option>
+<option value={2}>2x</option>
+```
+
+### Control visibility timeout
+
+Adjust how long controls remain visible:
+
+```typescript
+const hideControls = () => {
+  if (videoRef.current?.paused) return;
+  timer = setTimeout(() => {
+    container?.classList.remove("show-controls");
+  }, 3000); // Change timeout duration here
+};
+```
+
+## Build configuration
+
+### Development
+
+```bash
+npm run dev -- --turbopack  # Uses Turbopack for faster builds
+```
+
+### Production
+
+```bash
+npm run build  # Creates optimized production build
+npm run start  # Starts production server
+```
+
+### Linting
+
+```bash
+npm run lint  # Runs ESLint
+```
+
+## Deployment configuration
+
+### Vercel
+
+The application is optimized for Vercel deployment. No additional configuration needed.
+
+### Environment variables on Vercel
+
+Add environment variables in the Vercel dashboard:
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- `NEXT_PUBLIC_API_URL`
+
+### Custom domains
+
+Configure custom domains in Vercel project settings.
