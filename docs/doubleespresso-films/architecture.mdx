@@ -1,0 +1,169 @@
+---
+title: Architecture
+description: Understanding the folder structure and how doubleespresso-films works
+---
+
+## Project structure
+
+```
+doubleespresso-films/
+├── app/                          # Next.js App Router directory
+│   ├── common/                   # Shared utilities and contexts
+│   │   └── context/
+│   │       └── api-context.tsx   # Theme provider and context
+│   ├── components/               # React components
+│   │   ├── analytics/            # Google Analytics integration
+│   │   ├── film/                 # Film detail component
+│   │   ├── films-list/           # Film catalog components
+│   │   ├── filter/               # Sort filter component
+│   │   ├── layout/               # Header and Footer
+│   │   ├── loader/               # Loading states
+│   │   ├── player/               # Video player component
+│   │   ├── search/               # Search functionality
+│   │   ├── switch/               # Theme switch component
+│   │   ├── ui/                   # Reusable UI components
+│   │   └── wrapper/              # Main page wrapper
+│   ├── films/                    # Film detail pages
+│   │   └── [film]/               # Dynamic route for individual films
+│   │       └── page.tsx
+│   ├── lib/                      # Utility functions
+│   │   ├── gtag.js              # Google Analytics config
+│   │   └── utils.ts             # Helper utilities
+│   ├── globals.css              # Global styles
+│   ├── layout.tsx               # Root layout with providers
+│   └── page.tsx                 # Homepage
+├── public/                       # Static assets
+│   └── images/                  # Image assets
+├── docs/                        # Documentation (this site)
+├── components.json              # shadcn/ui configuration
+├── next.config.ts               # Next.js configuration
+├── package.json                 # Dependencies and scripts
+├── postcss.config.mjs           # PostCSS configuration
+├── tailwind.config.js           # Tailwind CSS configuration
+└── tsconfig.json                # TypeScript configuration
+```
+
+## Core modules
+
+### App Router (`app/`)
+
+The application uses Next.js 15 App Router with the following structure:
+
+#### Root layout (`layout.tsx`)
+- Configures global metadata and Open Graph tags
+- Wraps the app with `ThemeProvider`
+- Includes `Header`, `Footer`, and `GoogleAnalytics` components
+- Loads Geist fonts
+
+#### Homepage (`page.tsx`)
+- Renders the `Wrapper` component
+- Entry point for the film catalog
+
+#### Film detail pages (`films/[film]/page.tsx`)
+- Dynamic route for individual film pages
+- Shows loading state before rendering film details
+- Uses URL parameter to identify the film
+
+### Context and state management
+
+#### Theme context (`common/context/api-context.tsx`)
+- Manages light/dark theme state
+- Persists theme preference to localStorage
+- Detects system color scheme preference
+- Provides `useTheme` hook for components
+
+### Components
+
+#### Films list (`components/films-list/`)
+- **Films.tsx**: Fetches film data from Strapi API, handles filtering and sorting
+- **FilmItem.tsx**: Individual film card component
+
+#### Video player (`components/player/VideoPlayer.tsx`)
+- Custom video player with advanced controls
+- Supports keyboard shortcuts
+- Handles playback speed, volume, and fullscreen
+- Optional chat overlay feature
+- Synchronizes main video with chat video
+
+#### Layout components (`components/layout/`)
+- **Header.tsx**: Navigation and theme switcher
+- **Footer.tsx**: Footer with links and information
+
+#### Search and filter (`components/search/`, `components/filter/`)
+- Real-time search functionality
+- Multiple sorting options (rating, date, streamer rating)
+
+#### UI components (`components/ui/`)
+- Reusable components built with Radix UI
+- Custom icons for player controls
+- Buttons, inputs, cards, and other primitives
+
+### Data flow
+
+```
+1. User visits homepage
+   ↓
+2. Wrapper component renders
+   ↓
+3. Films component fetches data from Strapi API
+   https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000
+   ↓
+4. Films are filtered by search term
+   ↓
+5. Films are sorted by selected option
+   ↓
+6. FilmItem components render in grid
+   ↓
+7. User clicks film → Navigate to /films/[film-slug]
+   ↓
+8. Film component fetches specific film data
+   ↓
+9. VideoPlayer renders with film URL
+```
+
+## Key technologies
+
+### Next.js 15 App Router
+- Server and client components
+- File-based routing
+- Built-in optimization (fonts, images)
+- Turbopack for fast development
+
+### React 19
+- Modern hooks (useState, useEffect, useRef, useContext)
+- Client-side interactivity
+- Component composition
+
+### TypeScript
+- Full type safety
+- Interface definitions for API responses
+- Type inference and checking
+
+### Tailwind CSS 4
+- Utility-first styling
+- Responsive design
+- Dark mode support
+- Custom animations
+
+### Radix UI
+- Accessible component primitives
+- Dropdown menus, selects, switches
+- Unstyled, customizable components
+
+## Styling approach
+
+The application uses a combination of:
+
+1. **Tailwind CSS**: Utility classes for most styling
+2. **CSS Modules**: Component-specific styles (e.g., `switch/styles.css`)
+3. **Global CSS**: Base styles and CSS variables in `globals.css`
+4. **Class variance authority**: For component variants
+5. **Tailwind merge**: For merging conflicting classes
+
+## Performance optimizations
+
+- **Turbopack**: Fast development builds
+- **Font optimization**: Automatic font loading with `next/font`
+- **Image optimization**: Next.js Image component (when used)
+- **Code splitting**: Automatic with App Router
+- **Client-side caching**: Theme preference in localStorage
