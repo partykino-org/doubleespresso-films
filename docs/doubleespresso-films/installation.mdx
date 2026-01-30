@@ -1,0 +1,132 @@
+---
+title: Installation
+description: Requirements and setup instructions for running doubleespresso-films locally
+---
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js**: Version 20 or higher
+- **npm**, **yarn**, **pnpm**, or **bun**: Package manager of your choice
+- **Git**: For cloning the repository
+
+## Environment variables
+
+The application requires the following environment variables:
+
+### Google Analytics (optional)
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+Set this in `app/lib/gtag.js` or as an environment variable to enable Google Analytics tracking.
+
+### API endpoint
+
+The application connects to a Strapi CMS backend at:
+
+```
+https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000
+```
+
+If you're running your own Strapi instance, you'll need to update the API endpoint in `app/components/films-list/Films.tsx`.
+
+## Installation steps
+
+### Clone the repository
+
+```bash
+git clone https://github.com/partykino-org/doubleespresso-films.git
+cd doubleespresso-films
+```
+
+### Install dependencies
+
+Choose your preferred package manager:
+
+```bash
+npm install
+```
+
+```bash
+yarn install
+```
+
+```bash
+pnpm install
+```
+
+```bash
+bun install
+```
+
+### Configure environment
+
+Create a `.env.local` file in the root directory (optional):
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=your-ga-id
+```
+
+## Running locally
+
+### Development mode
+
+Start the development server with Turbopack:
+
+```bash
+npm run dev
+```
+
+```bash
+yarn dev
+```
+
+```bash
+pnpm dev
+```
+
+```bash
+bun dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Production build
+
+Build the application for production:
+
+```bash
+npm run build
+```
+
+Start the production server:
+
+```bash
+npm run start
+```
+
+### Linting
+
+Run ESLint to check code quality:
+
+```bash
+npm run lint
+```
+
+## Verification
+
+After starting the development server, verify the installation:
+
+1. Open [http://localhost:3000](http://localhost:3000) in your browser
+2. You should see the film catalog homepage
+3. The page should load films from the API (if the backend is accessible)
+4. Try searching and sorting films to ensure functionality works
+
+## Next steps
+
+- Read the [Quickstart guide](/doubleespresso-films/quickstart) to learn basic usage
+- Explore the [Architecture](/doubleespresso-films/architecture) to understand the codebase structure
+- Check [Configuration](/doubleespresso-films/configuration) for customization options

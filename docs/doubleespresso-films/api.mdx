@@ -1,0 +1,264 @@
+---
+title: API and public interfaces
+description: Public APIs, components, and interfaces available in doubleespresso-films
+---
+
+## External API integration
+
+### Strapi CMS API
+
+The application fetches film data from a Strapi backend:
+
+**Endpoint**: `https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000`
+
+**Method**: GET
+
+**Response structure**:
+
+```typescript
+{
+  data: Array<{
+    id: number;
+    title: string;
+    film_url: string;
+    poster: {
+      id: number;
+      documentId: string;
+      name: string;
+      alternativeText: string;
+      caption: string;
+      url: string;
+    };
+    rating: number;
+    watchDate: string;
+    genres: Array<{
+      name: string;
+      id: number;
+      slug: string;
+    }>;
+    streamerRating: number;
+  }>
+}
+```
+
+## Public components
+
+### ThemeProvider
+
+Context provider for theme management.
+
+```typescript
+import { ThemeProvider, useTheme } from "@/common/context/api-context";
+
+// Wrap your app
+<ThemeProvider>
+  {children}
+</ThemeProvider>
+
+// Use in components
+const { theme, toggleTheme } = useTheme();
+```
+
+**API**:
+- `theme`: Current theme ("light" | "dark")
+- `toggleTheme()`: Function to toggle between themes
+
+### VideoPlayer
+
+Custom video player component with advanced controls.
+
+```typescript
+import VideoPlayer from "@/components/player/VideoPlayer";
+
+<VideoPlayer 
+  film_url="https://example.com/video.mp4"
+  char_url="https://example.com/chat.mp4" // Optional
+/>
+```
+
+**Props**:
+- `film_url` (string): URL of the main video file
+- `char_url` (string | null): Optional URL for chat overlay video
+
+**Features**:
+- Play/pause control
+- Volume control with mute toggle
+- Playback speed (0.5x, 1x, 1.5x, 2x)
+- Progress bar with seek functionality
+- Fullscreen support
+- Keyboard shortcuts (Space, Arrow keys)
+- Optional synchronized chat overlay
+
+### Films
+
+Film catalog component with search and sort functionality.
+
+```typescript
+import { Films } from "@/components/films-list/Films";
+
+<Films 
+  searchedFilm="search term"
+  sortBy="rating-desc"
+/>
+```
+
+**Props**:
+- `searchedFilm` (string): Search filter term
+- `sortBy` (SortOption): Sort option
+
+**SortOption type**:
+```typescript
+type SortOption = 
+  | "streamer-rating-asc"
+  | "streamer-rating-desc"
+  | "rating-desc"
+  | "rating-asc"
+  | "date-desc"
+  | "date-asc";
+```
+
+### FilmItem
+
+Individual film card component.
+
+```typescript
+import { FilmItem } from "@/components/films-list/FilmItem";
+
+<FilmItem
+  title="Film Title"
+  film_url="film-slug"
+  poster={posterObject}
+  rating={8.5}
+  watchDate="2024-01-15"
+  genres={[{name: "Drama", id: 1, slug: "drama"}]}
+  streamerRating={9.0}
+/>
+```
+
+### Search
+
+Search input component for filtering films.
+
+```typescript
+import Search from "@/components/search/Search";
+
+<Search setSearchedFilm={setSearchedFilm} />
+```
+
+**Props**:
+- `setSearchedFilm`: State setter function for search term
+
+### SortFilter
+
+Dropdown component for sorting films.
+
+```typescript
+import { SortFilter } from "@/components/filter/SortFilter";
+
+<SortFilter 
+  setSortBy={setSortBy}
+  sortBy={sortBy}
+/>
+```
+
+**Props**:
+- `setSortBy`: State setter function for sort option
+- `sortBy`: Current sort option
+
+## UI components
+
+The application includes reusable UI components from Radix UI:
+
+### Button
+```typescript
+import { Button } from "@/components/ui/button";
+
+<Button variant="default" size="default">
+  Click me
+</Button>
+```
+
+### Card
+```typescript
+import { Card } from "@/components/ui/card";
+
+<Card>
+  {content}
+</Card>
+```
+
+### Input
+```typescript
+import { Input } from "@/components/ui/input";
+
+<Input type="text" placeholder="Enter text" />
+```
+
+### Select
+```typescript
+import { Select } from "@/components/ui/select";
+
+<Select>
+  <option value="1">Option 1</option>
+</Select>
+```
+
+### Switch
+```typescript
+import { Switch } from "@/components/ui/switch";
+
+<Switch checked={isChecked} onCheckedChange={setIsChecked} />
+```
+
+### Dropdown menu
+```typescript
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+
+<DropdownMenu>
+  {/* Menu items */}
+</DropdownMenu>
+```
+
+## Custom icons
+
+The application includes custom SVG icon components:
+
+- `PlayIcon`
+- `PauseIcon`
+- `ForwardIcon`
+- `BackwardIcon`
+- `FullscreenIcon`
+- `SpeakerIcon`
+- `SpeakerIconMuted`
+- `ChatIcon`
+- `ImdbIcon`
+- `TelegramIcon`
+- `TwitchIcon`
+- `YoutubeIcon`
+
+All icons accept standard SVG props including `className` for styling.
+
+## Utility functions
+
+### formatTime
+
+Located in `VideoPlayer.tsx`, formats seconds to HH:MM:SS or MM:SS.
+
+```typescript
+const formatTime = (time: number): string => {
+  const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+  const minutes = Math.floor((time / 60) % 60).toString().padStart(2, "0");
+  const hours = Math.floor(time / 3600);
+  return hours ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
+};
+```
+
+### cn (className utility)
+
+Located in `lib/utils.ts`, merges Tailwind classes.
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div className={cn("base-class", condition && "conditional-class")} />
+```

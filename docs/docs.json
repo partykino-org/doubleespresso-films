@@ -66,6 +66,34 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Doubleespresso Films",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "doubleespresso-films/introduction",
+              "doubleespresso-films/installation",
+              "doubleespresso-films/quickstart"
+            ]
+          },
+          {
+            "group": "Core concepts",
+            "pages": [
+              "doubleespresso-films/architecture",
+              "doubleespresso-films/api",
+              "doubleespresso-films/configuration"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "doubleespresso-films/troubleshooting",
+              "doubleespresso-films/contributing"
+            ]
+          }
+        ]
       }
     ],
     "global": {
