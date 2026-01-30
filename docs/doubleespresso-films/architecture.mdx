@@ -1,11 +1,11 @@
 ---
-title: Architecture
-description: Understanding the folder structure and how doubleespresso-films works
+title: "Architecture"
+description: "Understanding the folder structure and how doubleespresso-films works"
 ---
 
 ## Project structure
 
-```
+```typescript
 doubleespresso-films/
 ├── app/                          # Next.js App Router directory
 │   ├── common/                   # Shared utilities and contexts
@@ -50,16 +50,19 @@ doubleespresso-films/
 The application uses Next.js 15 App Router with the following structure:
 
 #### Root layout (`layout.tsx`)
+
 - Configures global metadata and Open Graph tags
 - Wraps the app with `ThemeProvider`
 - Includes `Header`, `Footer`, and `GoogleAnalytics` components
 - Loads Geist fonts
 
 #### Homepage (`page.tsx`)
+
 - Renders the `Wrapper` component
 - Entry point for the film catalog
 
 #### Film detail pages (`films/[film]/page.tsx`)
+
 - Dynamic route for individual film pages
 - Shows loading state before rendering film details
 - Uses URL parameter to identify the film
@@ -67,6 +70,7 @@ The application uses Next.js 15 App Router with the following structure:
 ### Context and state management
 
 #### Theme context (`common/context/api-context.tsx`)
+
 - Manages light/dark theme state
 - Persists theme preference to localStorage
 - Detects system color scheme preference
@@ -75,10 +79,12 @@ The application uses Next.js 15 App Router with the following structure:
 ### Components
 
 #### Films list (`components/films-list/`)
+
 - **Films.tsx**: Fetches film data from Strapi API, handles filtering and sorting
 - **FilmItem.tsx**: Individual film card component
 
 #### Video player (`components/player/VideoPlayer.tsx`)
+
 - Custom video player with advanced controls
 - Supports keyboard shortcuts
 - Handles playback speed, volume, and fullscreen
@@ -86,14 +92,17 @@ The application uses Next.js 15 App Router with the following structure:
 - Synchronizes main video with chat video
 
 #### Layout components (`components/layout/`)
+
 - **Header.tsx**: Navigation and theme switcher
 - **Footer.tsx**: Footer with links and information
 
 #### Search and filter (`components/search/`, `components/filter/`)
+
 - Real-time search functionality
 - Multiple sorting options (rating, date, streamer rating)
 
 #### UI components (`components/ui/`)
+
 - Reusable components built with Radix UI
 - Custom icons for player controls
 - Buttons, inputs, cards, and other primitives
@@ -124,28 +133,33 @@ The application uses Next.js 15 App Router with the following structure:
 ## Key technologies
 
 ### Next.js 15 App Router
+
 - Server and client components
 - File-based routing
 - Built-in optimization (fonts, images)
 - Turbopack for fast development
 
 ### React 19
+
 - Modern hooks (useState, useEffect, useRef, useContext)
 - Client-side interactivity
 - Component composition
 
 ### TypeScript
+
 - Full type safety
 - Interface definitions for API responses
 - Type inference and checking
 
 ### Tailwind CSS 4
+
 - Utility-first styling
 - Responsive design
 - Dark mode support
 - Custom animations
 
 ### Radix UI
+
 - Accessible component primitives
 - Dropdown menus, selects, switches
 - Unstyled, customizable components

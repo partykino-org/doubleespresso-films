@@ -1,6 +1,6 @@
 ---
-title: Troubleshooting
-description: Common issues and solutions for doubleespresso-films
+title: "Troubleshooting"
+description: "Common issues and solutions for doubleespresso-films"
 ---
 
 ## Installation issues
@@ -12,6 +12,7 @@ description: Common issues and solutions for doubleespresso-films
 **Solutions**:
 
 1. Clear npm cache:
+
 ```bash
 npm cache clean --force
 rm -rf node_modules package-lock.json
@@ -19,6 +20,7 @@ npm install
 ```
 
 2. Use a different package manager:
+
 ```bash
 yarn install
 # or
@@ -26,6 +28,7 @@ pnpm install
 ```
 
 3. Check Node.js version:
+
 ```bash
 node --version  # Should be 20 or higher
 ```
@@ -37,12 +40,14 @@ node --version  # Should be 20 or higher
 **Solutions**:
 
 1. Ensure TypeScript is installed:
+
 ```bash
 npm install --save-dev typescript @types/node @types/react @types/react-dom
 ```
 
 2. Check `tsconfig.json` configuration
 3. Run type checking:
+
 ```bash
 npx tsc --noEmit
 ```
@@ -59,7 +64,6 @@ npx tsc --noEmit
    - Check network connection
    - Verify API URL: `https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000`
    - Check browser console for CORS errors
-
 2. **API response format changed**
    - Verify response structure matches expected format
    - Check browser Network tab for API response
@@ -96,12 +100,10 @@ const getFilms = async () => {
    - Verify `film_url` is accessible
    - Test URL directly in browser
    - Check for CORS headers on video server
-
 2. **Browser compatibility**
    - Ensure browser supports HTML5 video
    - Check video codec compatibility
    - Try different browser
-
 3. **Mobile issues**
    - On mobile, native controls are used
    - Check `isMobile` detection logic
@@ -145,6 +147,7 @@ localStorage.getItem("theme");
 ```
 
 3. Clear localStorage and try again:
+
 ```javascript
 localStorage.clear();
 ```
@@ -158,17 +161,20 @@ localStorage.clear();
 **Solutions**:
 
 1. Verify Tailwind is configured:
+
 ```bash
 # Check postcss.config.mjs exists
 cat postcss.config.mjs
 ```
 
 2. Restart development server:
+
 ```bash
 npm run dev
 ```
 
 3. Check for class name conflicts:
+
 ```typescript
 // Use cn utility to merge classes
 import { cn } from "@/lib/utils";
@@ -182,12 +188,14 @@ className={cn("base-class", "additional-class")}
 **Solutions**:
 
 1. Verify `dark` class is added to `<html>` element:
+
 ```javascript
 // Check in browser console
 document.documentElement.classList.contains('dark');
 ```
 
 2. Ensure dark mode variants are used:
+
 ```typescript
 className="bg-white dark:bg-black"
 ```
@@ -202,12 +210,14 @@ className="bg-white dark:bg-black"
 
 1. Check network tab for slow requests
 2. Optimize API pagination:
+
 ```typescript
 // Reduce page size if needed
 pagination[pageSize]=100  // Instead of 1000
 ```
 
 3. Enable production build:
+
 ```bash
 npm run build
 npm run start
@@ -234,12 +244,14 @@ npm run start
 
 1. Restart development server
 2. Clear `.next` directory:
+
 ```bash
-rm -rf .next
+rm -rf .nexs
 npm run dev
 ```
 
 3. Check file watcher limits (Linux):
+
 ```bash
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
@@ -252,16 +264,19 @@ sudo sysctl -p
 **Solutions**:
 
 1. Run lint with auto-fix:
+
 ```bash
 npm run lint -- --fix
 ```
 
 2. Check ESLint configuration:
+
 ```bash
 cat eslint.config.mjs
 ```
 
 3. Disable specific rules if needed (not recommended):
+
 ```javascript
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ```
@@ -298,6 +313,7 @@ const nextConfig: NextConfig = {
 **Solutions**:
 
 1. Add authentication headers:
+
 ```typescript
 const res = await fetch(url, {
   headers: {
