@@ -1,0 +1,252 @@
+---
+title: Quickstart
+description: Add your first movie to DoubleEspresso in minutes
+---
+
+This guide walks you through adding your first movie to the DoubleEspresso CMS.
+
+## Prerequisites
+
+- DoubleEspresso installed and running locally
+- Admin account created
+- Logged into the admin panel at `http://localhost:1337/admin`
+
+## Add your first movie
+
+<Steps>
+<Step title="Navigate to Movies collection">
+  From the admin dashboard, click on **Content Manager** in the left sidebar, then select **Movies** from the collection types.
+
+  <Frame>
+    <img src="/images/doubleespresso/content-manager.png" alt="Content Manager navigation" />
+  </Frame>
+</Step>
+
+<Step title="Create new movie entry">
+  Click the **Create new entry** button in the top right corner.
+
+  Fill in the basic information:
+  
+  - **Title**: The movie title (e.g., "The Shawshank Redemption")
+  - **Original Title**: Original language title if different
+  - **Release Year**: Year of release (e.g., 1994)
+  - **Runtime**: Duration in minutes (e.g., 142)
+
+  ```json Example movie data
+  {
+    "title": "The Shawshank Redemption",
+    "originalTitle": "The Shawshank Redemption",
+    "releaseYear": 1994,
+    "runtime": 142
+  }
+  ```
+</Step>
+
+<Step title="Add description and metadata">
+  Scroll down to add more details:
+  
+  - **Synopsis**: Brief plot summary
+  - **Overview**: Detailed description
+  - **Tagline**: Movie tagline or slogan
+  - **Rating**: Content rating (G, PG, PG-13, R, etc.)
+  - **Language**: Primary language
+  - **Country**: Country of origin
+
+  <Tip>
+  Use the rich text editor for formatting the synopsis and overview.
+  </Tip>
+</Step>
+
+<Step title="Upload movie poster">
+  In the **Media** section:
+  
+  1. Click on the **Poster** field
+  2. Either drag and drop an image or click to browse
+  3. Select your movie poster image
+  4. Wait for the upload to complete
+
+  <Note>
+  Recommended poster dimensions: 500x750px (2:3 aspect ratio)
+  </Note>
+</Step>
+
+<Step title="Link genres">
+  In the **Relations** section:
+  
+  1. Click on the **Genres** field
+  2. Select one or more genres from the dropdown (e.g., Drama, Crime)
+  3. If a genre doesn't exist, you can create it on the fly
+
+  <Info>
+  You can add multiple genres to a single movie.
+  </Info>
+</Step>
+
+<Step title="Add cast and crew">
+  To link actors and directors:
+  
+  1. Scroll to **Cast** section
+  2. Click **Add a relation**
+  3. Search for existing actors or create new ones
+  4. Repeat for **Directors** and **Writers**
+
+  <Accordion title="Creating a new actor">
+    1. Click **Create new Actor**
+    2. Fill in name and other details
+    3. Upload actor photo
+    4. Save and it will be automatically linked
+  </Accordion>
+</Step>
+
+<Step title="Save and publish">
+  Once all information is added:
+  
+  1. Click **Save** in the top right to save as draft
+  2. Click **Publish** to make it available via the API
+
+  <Check>
+  Your movie is now published and accessible through the API!
+  </Check>
+</Step>
+</Steps>
+
+## Access your movie via API
+
+After publishing, your movie is immediately available through the REST API:
+
+<CodeGroup>
+```bash cURL
+curl http://localhost:1337/api/movies
+```
+
+```javascript JavaScript
+const response = await fetch('http://localhost:1337/api/movies');
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.get('http://localhost:1337/api/movies')
+movies = response.json()
+print(movies)
+```
+</CodeGroup>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "title": "The Shawshank Redemption",
+        "originalTitle": "The Shawshank Redemption",
+        "releaseYear": 1994,
+        "runtime": 142,
+        "synopsis": "Two imprisoned men bond over a number of years...",
+        "rating": "R",
+        "language": "English",
+        "country": "USA",
+        "createdAt": "2024-01-15T10:30:00.000Z",
+        "updatedAt": "2024-01-15T10:30:00.000Z",
+        "publishedAt": "2024-01-15T10:35:00.000Z"
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 25,
+      "pageCount": 1,
+      "total": 1
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Bulk import movies
+
+For adding multiple movies at once, you can use the import feature:
+
+<Steps>
+<Step title="Prepare CSV file">
+  Create a CSV file with movie data:
+
+  ```csv movies.csv
+  title,originalTitle,releaseYear,runtime,rating,language
+  The Godfather,The Godfather,1972,175,R,English
+  Pulp Fiction,Pulp Fiction,1994,154,R,English
+  The Dark Knight,The Dark Knight,2008,152,PG-13,English
+  ```
+</Step>
+
+<Step title="Import via admin panel">
+  1. Go to **Content Manager** > **Movies**
+  2. Click **Import** button
+  3. Select your CSV file
+  4. Map CSV columns to movie fields
+  5. Click **Import**
+</Step>
+</Steps>
+
+<Warning>
+Bulk imports create entries as drafts. You'll need to review and publish them individually.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+<Card title="API documentation" icon="code" href="/doubleespresso/api">
+  Explore all available API endpoints
+</Card>
+
+<Card title="Configuration" icon="gear" href="/doubleespresso/configuration">
+  Customize content types and fields
+</Card>
+
+<Card title="Media management" icon="images" href="/doubleespresso/media">
+  Learn about handling images and videos
+</Card>
+
+<Card title="User roles" icon="shield" href="/doubleespresso/roles">
+  Set up permissions and access control
+</Card>
+</CardGroup>
+
+## Common tasks
+
+<AccordionGroup>
+<Accordion title="How to edit a movie">
+  1. Navigate to **Content Manager** > **Movies**
+  2. Click on the movie you want to edit
+  3. Make your changes
+  4. Click **Save** to update
+</Accordion>
+
+<Accordion title="How to delete a movie">
+  1. Navigate to **Content Manager** > **Movies**
+  2. Click on the movie you want to delete
+  3. Click the **Delete** button in the top right
+  4. Confirm the deletion
+  
+  <Warning>
+  Deletion is permanent and cannot be undone.
+  </Warning>
+</Accordion>
+
+<Accordion title="How to unpublish a movie">
+  1. Open the movie entry
+  2. Click **Unpublish** in the top right
+  3. The movie will no longer be available via the API but remains in the database
+</Accordion>
+
+<Accordion title="How to duplicate a movie">
+  1. Open the movie entry
+  2. Click the **...** menu in the top right
+  3. Select **Duplicate**
+  4. Edit the duplicated entry as needed
+</Accordion>
+</AccordionGroup>
