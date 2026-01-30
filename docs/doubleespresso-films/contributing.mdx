@@ -1,0 +1,407 @@
+---
+title: Contributing and development
+description: Guide for developers contributing to doubleespresso-films
+---
+
+## Development setup
+
+### Prerequisites
+
+- Node.js 20 or higher
+- Git
+- Code editor (VS Code recommended)
+
+### Clone and setup
+
+```bash
+# Clone the repository
+git clone https://github.com/partykino-org/doubleespresso-films.git
+cd doubleespresso-films
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+## Development workflow
+
+### Running in development mode
+
+Start the development server with Turbopack for fast refresh:
+
+```bash
+npm run dev
+```
+
+Changes to files will automatically reload in the browser.
+
+### Code quality
+
+#### Linting
+
+Run ESLint to check code quality:
+
+```bash
+npm run lint
+```
+
+Fix linting issues automatically:
+
+```bash
+npm run lint -- --fix
+```
+
+#### Type checking
+
+Run TypeScript type checking:
+
+```bash
+npx tsc --noEmit
+```
+
+### Building for production
+
+Create an optimized production build:
+
+```bash
+npm run build
+```
+
+Test the production build locally:
+
+```bash
+npm run start
+```
+
+## Project structure
+
+### Key directories
+
+- `app/` - Next.js App Router pages and components
+- `app/components/` - React components
+- `app/lib/` - Utility functions
+- `public/` - Static assets
+- `docs/` - Documentation files
+
+### Component organization
+
+Components are organized by feature:
+
+```
+app/components/
+├── analytics/      # Analytics integration
+├── film/          # Film detail components
+├── films-list/    # Film catalog components
+├── filter/        # Filtering components
+├── layout/        # Layout components (Header, Footer)
+├── loader/        # Loading states
+├── player/        # Video player
+├── search/        # Search functionality
+├── switch/        # Theme switcher
+├── ui/            # Reusable UI primitives
+└── wrapper/       # Page wrappers
+```
+
+## Coding standards
+
+### TypeScript
+
+- Use TypeScript for all new files
+- Define interfaces for component props
+- Avoid `any` type - use proper types
+- Use type inference where possible
+
+Example:
+
+```typescript
+interface FilmItemProps {
+  title: string;
+  film_url: string;
+  rating: number;
+  watchDate: string;
+}
+
+export function FilmItem({ title, film_url, rating, watchDate }: FilmItemProps) {
+  // Component implementation
+}
+```
+
+### React components
+
+- Use functional components with hooks
+- Prefer named exports for components
+- Use `"use client"` directive for client components
+- Keep components focused and single-purpose
+
+Example:
+
+```typescript
+"use client";
+
+import { useState } from "react";
+
+export function MyComponent() {
+  const [state, setState] = useState("");
+  
+  return <div>{state}</div>;
+}
+```
+
+### Styling
+
+- Use Tailwind CSS utility classes
+- Follow mobile-first responsive design
+- Use `cn()` utility for conditional classes
+- Support dark mode with `dark:` variants
+
+Example:
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div className={cn(
+  "base-class",
+  "md:desktop-class",
+  "dark:dark-mode-class",
+  condition && "conditional-class"
+)} />
+```
+
+### File naming
+
+- Components: PascalCase (e.g., `FilmItem.tsx`)
+- Utilities: camelCase (e.g., `utils.ts`)
+- Pages: lowercase (e.g., `page.tsx`)
+- Styles: kebab-case (e.g., `styles.css`)
+
+## Adding new features
+
+### Adding a new component
+
+1. Create component file in appropriate directory:
+
+```typescript
+// app/components/my-feature/MyComponent.tsx
+"use client";
+
+import { useState } from "react";
+
+export function MyComponent() {
+  return <div>My Component</div>;
+}
+```
+
+2. Export from index if needed
+3. Import and use in parent component
+4. Add tests if applicable
+
+### Adding a new page
+
+1. Create page in `app/` directory:
+
+```typescript
+// app/my-page/page.tsx
+export default function MyPage() {
+  return <div>My Page</div>;
+}
+```
+
+2. Add metadata if needed:
+
+```typescript
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Page",
+  description: "Description of my page",
+};
+```
+
+### Adding a new API integration
+
+1. Create fetch function:
+
+```typescript
+// app/lib/api.ts
+export async function fetchData() {
+  const res = await fetch("https://api.example.com/data");
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+}
+```
+
+2. Use in component:
+
+```typescript
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchData } from "@/lib/api";
+
+export function MyComponent() {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    fetchData().then(setData);
+  }, []);
+  
+  return <div>{/* Render data */}</div>;
+}
+```
+
+## Testing
+
+### Manual testing
+
+1. Test on multiple browsers (Chrome, Firefox, Safari)
+2. Test responsive design on different screen sizes
+3. Test dark and light themes
+4. Test keyboard navigation
+5. Verify accessibility
+
+### Browser testing
+
+Use browser developer tools:
+
+```bash
+# Chrome DevTools
+Cmd/Ctrl + Shift + I
+
+# Responsive design mode
+Cmd/Ctrl + Shift + M
+```
+
+## Git workflow
+
+### Branching
+
+Create feature branches from `main`:
+
+```bash
+git checkout -b feature/my-feature
+```
+
+### Commit messages
+
+Use clear, descriptive commit messages:
+
+```bash
+git commit -m "Add search functionality to film catalog"
+git commit -m "Fix video player controls on mobile"
+git commit -m "Update API endpoint configuration"
+```
+
+### Pull requests
+
+1. Push your branch to GitHub:
+
+```bash
+git push origin feature/my-feature
+```
+
+2. Create pull request on GitHub
+3. Describe changes and motivation
+4. Request review from maintainers
+5. Address review feedback
+6. Merge when approved
+
+## Common development tasks
+
+### Adding a new UI component
+
+```bash
+# If using shadcn/ui
+npx shadcn-ui@latest add button
+```
+
+### Updating dependencies
+
+```bash
+# Check for outdated packages
+npm outdated
+
+# Update specific package
+npm update package-name
+
+# Update all packages
+npm update
+```
+
+### Debugging
+
+Use browser DevTools and console.log:
+
+```typescript
+console.log("Debug value:", value);
+console.error("Error occurred:", error);
+```
+
+Use React DevTools browser extension for component inspection.
+
+## Performance optimization
+
+### Code splitting
+
+Next.js automatically code-splits by route. For additional splitting:
+
+```typescript
+import dynamic from 'next/dynamic';
+
+const DynamicComponent = dynamic(() => import('@/components/MyComponent'));
+```
+
+### Image optimization
+
+Use Next.js Image component:
+
+```typescript
+import Image from 'next/image';
+
+<Image 
+  src="/image.jpg" 
+  alt="Description"
+  width={500}
+  height={300}
+/>
+```
+
+### Lazy loading
+
+Defer loading of non-critical components:
+
+```typescript
+import dynamic from 'next/dynamic';
+
+const VideoPlayer = dynamic(
+  () => import('@/components/player/VideoPlayer'),
+  { ssr: false }
+);
+```
+
+## Getting help
+
+- Review existing code for patterns
+- Check [Next.js documentation](https://nextjs.org/docs)
+- Check [React documentation](https://react.dev)
+- Ask questions in GitHub Issues
+- Review [Tailwind CSS docs](https://tailwindcss.com/docs)
+
+## Code review checklist
+
+Before submitting a pull request:
+
+- [ ] Code follows project conventions
+- [ ] TypeScript types are properly defined
+- [ ] Components are properly typed
+- [ ] Linting passes (`npm run lint`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] Tested in development mode
+- [ ] Tested in production build
+- [ ] Responsive design works
+- [ ] Dark mode works
+- [ ] No console errors
+- [ ] Commit messages are clear
