@@ -17,7 +17,7 @@ export function Films({
   useEffect(() => {
     const getFilms = async () => {
       const res = await fetch(
-        "https://admin.doublekava.watch/api/cards?populate=*"
+        "https://admin.doublekava.watch/api/cards?populate=*&pagination[pageSize]=1000"
       );
 
       if (!res.ok) {
