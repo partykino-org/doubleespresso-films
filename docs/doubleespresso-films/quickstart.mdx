@@ -1,0 +1,96 @@
+---
+title: Quickstart
+description: Get started with doubleespresso-films in minutes
+---
+
+## Quick setup
+
+Get the application running in three simple steps:
+
+```bash
+# Clone and install
+git clone https://github.com/partykino-org/doubleespresso-films.git
+cd doubleespresso-films
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Basic usage
+
+### Browsing films
+
+The homepage displays a grid of film cards with:
+- Poster image
+- Film title
+- Rating (out of 10)
+- Streamer rating
+- Watch date
+- Genres
+
+### Searching films
+
+Use the search bar at the top to filter films by title:
+
+```
+Type any part of a film title to filter results in real-time
+```
+
+### Sorting films
+
+Click the sort dropdown to organize films by:
+- **Streamer rating** (ascending/descending)
+- **Rating** (ascending/descending)
+- **Watch date** (ascending/descending)
+
+### Watching a film
+
+1. Click on any film card to open the detail page
+2. The video player will load with the film
+3. Use the controls to play, pause, adjust volume, and change playback speed
+
+### Video player controls
+
+#### Mouse controls
+- **Click**: Play/pause
+- **Double-click**: Toggle fullscreen
+- **Progress bar**: Click to seek
+
+#### Keyboard shortcuts
+- **Space**: Play/pause
+- **Left arrow**: Skip backward 10 seconds
+- **Right arrow**: Skip forward 10 seconds
+
+### Theme switching
+
+Toggle between light and dark themes using the theme switcher in the header. Your preference is saved automatically.
+
+## Example workflow
+
+Here's a typical user workflow:
+
+```typescript
+// 1. User visits homepage
+// Films are automatically fetched from the API
+
+// 2. User searches for a specific film
+// Type "Безодня" in the search bar
+
+// 3. User sorts by rating
+// Select "Rating (descending)" from the dropdown
+
+// 4. User clicks on a film card
+// Navigate to /films/[film-slug]
+
+// 5. User watches the film
+// Video player loads and user can control playback
+```
+
+## Next steps
+
+- Learn about the [Architecture](/doubleespresso-films/architecture) to understand how components work together
+- Explore [Configuration](/doubleespresso-films/configuration) options to customize the application
+- Check the [API documentation](/doubleespresso-films/api) to understand data structures
