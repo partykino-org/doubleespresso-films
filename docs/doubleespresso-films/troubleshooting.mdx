@@ -14,7 +14,7 @@ description: "Common issues and solutions for doubleespresso-films"
 1. Clear npm cache:
 
 ```bash
-npm cache clean --force
+npm cache clean
 rm -rf node_modules package-lock.json
 npm install
 ```
@@ -70,7 +70,7 @@ npx tsc --noEmit
 
 **Solutions**:
 
-```typescript
+```javascript
 // Add error handling in Films.tsx
 const getFilms = async () => {
   try {
