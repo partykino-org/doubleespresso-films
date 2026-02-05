@@ -1,0 +1,94 @@
+---
+title: Introduction
+description: DoubleEspresso Strapi Admin - A headless CMS for managing movie content
+---
+
+## What is DoubleEspresso Strapi Admin?
+
+DoubleEspresso Strapi Admin is a customized Strapi-based headless CMS designed specifically for managing movie and film content. It provides a powerful admin panel for content creators, editors, and administrators to manage movie databases, metadata, and related content.
+
+## Who is it for?
+
+DoubleEspresso is built for:
+
+- **Content managers** who need to add, edit, and organize movie information
+- **Developers** building movie-related applications and websites
+- **Media companies** managing large film catalogs
+- **Film enthusiasts** creating curated movie databases
+
+## Key features
+
+<CardGroup cols={2}>
+<Card title="Movie management" icon="film">
+  Add, edit, and organize movies with rich metadata including titles, descriptions, cast, crew, and release information.
+</Card>
+
+<Card title="Content API" icon="code">
+  RESTful and GraphQL APIs for accessing movie data from any frontend application.
+</Card>
+
+<Card title="Media handling" icon="images">
+  Upload and manage movie posters, stills, trailers, and other media assets.
+</Card>
+
+<Card title="User roles" icon="users">
+  Role-based access control for managing permissions across different user types.
+</Card>
+
+<Card title="Custom fields" icon="sliders">
+  Extensible content types for adding custom metadata and taxonomies.
+</Card>
+
+<Card title="Search & filter" icon="search">
+  Powerful search and filtering capabilities for finding movies quickly.
+</Card>
+</CardGroup>
+
+## What does it do?
+
+DoubleEspresso Strapi Admin serves as the backend content management system for movie-related applications. It handles:
+
+- **Content storage** - Stores movie information in a structured database
+- **API generation** - Automatically generates REST and GraphQL APIs
+- **Media management** - Handles file uploads and media library
+- **Authentication** - Manages user authentication and authorization
+- **Content relationships** - Links movies with actors, directors, genres, and studios
+
+## Movie workflow
+
+The typical workflow for adding movies to the system:
+
+<Steps>
+<Step title="Create movie entry">
+  Navigate to the Movies collection and create a new entry with basic information like title and release year.
+</Step>
+
+<Step title="Add metadata">
+  Fill in detailed information including synopsis, runtime, rating, language, and country.
+</Step>
+
+<Step title="Upload media">
+  Add movie posters, backdrop images, and trailer videos to the media library.
+</Step>
+
+<Step title="Link relationships">
+  Connect the movie to related entities like actors, directors, genres, and production companies.
+</Step>
+
+<Step title="Publish">
+  Review the content and publish it to make it available via the API.
+</Step>
+</Steps>
+
+## Architecture
+
+DoubleEspresso is built on:
+
+- **Strapi v4** - Headless CMS framework
+- **Node.js** - Runtime environment
+- **PostgreSQL/MySQL/SQLite** - Database options
+- **React** - Admin panel UI
+
+<Note>
+The admin panel is accessible at `/admin` and provides a user-friendly interface for managing all content.
+</Note>
